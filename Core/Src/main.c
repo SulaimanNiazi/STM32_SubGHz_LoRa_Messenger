@@ -24,7 +24,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+
 #include "radio_driver.h"
+#include "stm32wlxx_nucleo.h" // Gives LED helpers
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -92,14 +95,26 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
+  BSP_LED_Init(LED_BLUE);
+  BSP_LED_Init(LED_GREEN);
+  BSP_LED_Init(LED_RED);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
   while (1)
   {
     /* USER CODE END WHILE */
-
+	  BSP_LED_On(LED_BLUE);
+	  BSP_LED_On(LED_GREEN);
+	  BSP_LED_On(LED_RED);
+	  HAL_Delay(1000);
+	  BSP_LED_Off(LED_BLUE);
+	  BSP_LED_Off(LED_GREEN);
+	  BSP_LED_Off(LED_RED);
+	  HAL_Delay(1000);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

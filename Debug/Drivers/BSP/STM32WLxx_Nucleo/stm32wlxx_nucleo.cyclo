@@ -1,0 +1,16 @@
+../Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_bus.h:449:22:LL_AHB2_GRP1_EnableClock	1
+../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.c:137:10:BSP_GetVersion	1
+../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.c:155:9:BSP_LED_Init	1
+../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.c:184:9:BSP_LED_DeInit	1
+../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.c:204:9:BSP_LED_On	1
+../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.c:220:9:BSP_LED_Off	1
+../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.c:236:9:BSP_LED_Toggle	1
+../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.c:252:9:BSP_LED_GetState	1
+../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.c:279:9:BSP_PB_Init	5
+../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.c:327:9:BSP_PB_DeInit	1
+../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.c:344:9:BSP_PB_GetState	1
+../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.c:354:6:BSP_PB_IRQHandler	1
+../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.c:368:13:BSP_PB_Callback	1
+../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.c:619:13:BUTTON_SW1_EXTI_Callback	1
+../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.c:628:13:BUTTON_SW2_EXTI_Callback	1
+../Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.c:637:13:BUTTON_SW3_EXTI_Callback	1
