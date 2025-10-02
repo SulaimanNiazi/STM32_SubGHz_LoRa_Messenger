@@ -54,7 +54,7 @@
 uint8_t buffer[MAX_BUFFER_SIZE], output[MAX_BUFFER_SIZE], input[1];
 uint16_t count = 0;
 bool messageReady = false;
-char id[MAX_BUFFER_SIZE];
+char id[MAX_BUFFER_SIZE] = "\r\nSetting your ID as";
 int idLen = -2;
 
 /* USER CODE END PV */
@@ -64,6 +64,7 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 
 void UART_Transmit(const char*);
+void resetTerminal();
 
 /* USER CODE END PFP */
 
@@ -97,6 +98,8 @@ int main(void)
 
   /* USER CODE BEGIN SysInit */
 
+  HAL_Delay(1000);
+
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -118,10 +121,11 @@ int main(void)
   UART_Transmit((char*)buffer);
   while(!messageReady)HAL_UART_Receive_IT(&huart2, input, 1);
   messageReady = false;
+  HAL_NVIC_DisableIRQ(USART2_IRQn);
   idLen = snprintf(id, MAX_BUFFER_SIZE, "%s", (char*)output);
-
-  UART_Transmit("Your ID: ");
   UART_Transmit(id);
+  UART_Transmit("\r\n\r\n");
+  resetTerminal();
 
   while (1)
   {
@@ -177,19 +181,20 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 
 void UART_Transmit(const char* string){
-	HAL_UART_Transmit(&huart2, (uint8_t *)string, strlen(string), HAL_MAX_DELAY);
+	HAL_UART_Transmit(&huart2, (uint8_t*)string, strlen(string), HAL_MAX_DELAY);
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	switch(input[0]){
-		case 0x0d:
+		case 0xd:
 			UART_Transmit("\r\n");
 			sprintf((char*)output, "%s", (char*)buffer);
 			output[count] = '\0';
 			messageReady = true;
+			resetTerminal();
 			break;
 
-		case 0x08:
+		case 0x8:
 			if(count > (idLen + 2)){
 				count--;
 				UART_Transmit("\b \b");
@@ -202,6 +207,12 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 				HAL_UART_Transmit(huart, input, 1, HAL_MAX_DELAY);
 			}
 	}
+}
+
+void resetTerminal(){
+	UART_Transmit(id);
+	UART_Transmit(": ");
+	count = idLen + 2;
 }
 
 /* USER CODE END 4 */
