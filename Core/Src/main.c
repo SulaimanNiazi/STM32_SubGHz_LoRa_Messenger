@@ -33,6 +33,24 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 
+typedef enum{
+	MASTER,
+	SLAVE
+} State;
+
+typedef enum{
+	RX,
+	TX
+} SubState;
+
+typedef struct{
+	State state;
+	SubState subState;
+	uint32_t rxTimeout, txDelay;
+	uint8_t rxLen;
+	char rxBuffer[RX_BUFFER_SIZE];
+} SessionContext;
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -63,7 +81,7 @@ bool messageReady = false;
 char id[MAX_BUFFER_SIZE] = "\r\nSetting your ID as";
 int idLen = -2;
 
-void (*volatile currentEvent)(void);
+void (*volatile currentEvent)(SessionContext*);
 PacketParams_t packetParams;
 
 /* USER CODE END PV */
@@ -142,6 +160,17 @@ int main(void)
 
   BSP_LED_On(LED_RED); // Disconnected at first
 
+  SessionContext sessionContext = {
+		  .state = MASTER,		// Start as Master
+		  .subState = RX,		// Start by listening
+		  .rxTimeout = 3000,	// ms
+		  .txDelay = 100 		// ms
+  };
+  uint16_t mask = IRQ_RX_DONE | IRQ_RX_TX_TIMEOUT | IRQ_CRC_ERROR;
+  SUBGRF_SetDioIrqParams( mask, mask, IRQ_RADIO_NONE, IRQ_RADIO_NONE );	// Arm radio IRQs for RX done, timeout, CRC error
+  SUBGRF_SetSwitch(RFO_LP, RFSWITCH_RX); 								// Set RF switch to RX path on low-power PA path
+  SUBGRF_SetRx(sessionContext.rxTimeout << 6); 							// SetRx(timeout): SX126x timeout units are 15.625 µs (1/64 ms). Multiplying ms by 64 = << 6.
+
   HAL_NVIC_EnableIRQ(USART2_IRQn);
   messageReady = false;
 
@@ -151,7 +180,7 @@ int main(void)
 
 	currentEvent = NULL;
 	while(!currentEvent);
-	currentEvent();
+	currentEvent(&sessionContext);
 
     /* USER CODE BEGIN 3 */
   }
