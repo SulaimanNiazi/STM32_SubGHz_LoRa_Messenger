@@ -43,7 +43,13 @@
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
 
-#define MAX_BUFFER_SIZE 255
+#define MAX_BUFFER_SIZE 		255
+#define RF_FREQ		 			868000000 	// Hz = 868 MHz - Ranges in PK {433.05 - 434.79}, {865 - 869}, {920 - 925}
+#define TX_POWER		 		14        	// dBm
+#define LORA_BANDWIDTH 			LORA_BW_125	// kHz
+#define LORA_SPREADING_FACTOR 	7		  	// SF7
+#define LORA_CODING_RATE 		1		  	// 4/5
+#define LORA_PREAMBLE_LENGTH 	8         	// Same for Tx and Rx
 
 /* USER CODE END PM */
 
@@ -58,6 +64,7 @@ char id[MAX_BUFFER_SIZE] = "\r\nSetting your ID as";
 int idLen = -2;
 
 void (*volatile currentEvent)(void);
+PacketParams_t packetParams;
 
 /* USER CODE END PV */
 
@@ -67,6 +74,9 @@ void SystemClock_Config(void);
 
 void UART_Transmit(const char*);
 void resetTerminal();
+
+void Radio_Init();
+void Radio_DIO_IRq_Callback_Handler(RadioIrqMasks_t);
 
 /* USER CODE END PFP */
 
@@ -110,9 +120,11 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
-  BSP_LED_Init(LED_BLUE);
-  BSP_LED_Init(LED_GREEN);
-  BSP_LED_Init(LED_RED);
+  BSP_LED_Init(LED_BLUE);	// Master
+  BSP_LED_Init(LED_GREEN);	// Slave
+  BSP_LED_Init(LED_RED);	// Disconnected
+
+  Radio_Init();
 
   /* USER CODE END 2 */
 
@@ -121,15 +133,17 @@ int main(void)
 
   snprintf((char*)buffer, MAX_BUFFER_SIZE, "\r\nSTM32 SubGHz LoRa Messenger\r\n\r\nPlease Enter an ID: ");
   UART_Transmit((char*)buffer);
-  while(!messageReady)HAL_UART_Receive_IT(&huart2, input, 1);
-  messageReady = false;
+  while(!messageReady) HAL_UART_Receive_IT(&huart2, input, 1);
   HAL_NVIC_DisableIRQ(USART2_IRQn);
   idLen = snprintf(id, MAX_BUFFER_SIZE, "%s", (char*)output);
   UART_Transmit(id);
   UART_Transmit("\r\n\r\n");
   resetTerminal();
 
+  BSP_LED_On(LED_RED); // Disconnected at first
+
   HAL_NVIC_EnableIRQ(USART2_IRQn);
+  messageReady = false;
 
   while (1)
   {
@@ -187,6 +201,12 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+/* 👆🏼
+ *  Enables backup domain access, sets LSE drive, uses MSI as SYSCLK, no PLL;
+ *  APB clocks = AHB = SYSCLK;
+ *  flash latency 2.
+ *  This is a low-power, simple config suitable for the WL.
+ */
 
 void UART_Transmit(const char* string){
 	HAL_UART_Transmit(&huart2, (uint8_t*)string, strlen(string), HAL_MAX_DELAY);
@@ -221,6 +241,77 @@ void resetTerminal(){
 	UART_Transmit(id);
 	UART_Transmit(": ");
 	count = idLen + 2;
+}
+
+void Radio_DIO_IRq_Callback_Handler(RadioIrqMasks_t radioIRq){
+	switch(radioIRq){
+		case IRQ_TX_DONE:
+			UART_Transmit("\r\nTX DONE\r\n");
+			break;
+
+		case IRQ_RX_DONE:
+			UART_Transmit("\r\nRX DONE\r\n");
+			break;
+
+		case IRQ_RX_TX_TIMEOUT:
+			UART_Transmit("\r\nTIMEOUT\r\n");
+			break;
+
+		case IRQ_CRC_ERROR: // Rx Error
+			UART_Transmit("\r\nRX CRC ERROR\r\n");
+			break;
+		default: break;
+	}
+
+	resetTerminal();
+}
+
+/** Initialize the Sub-GHz radio and dependent hardware.
+  */
+void Radio_Init(){
+	// Initialize the hardware (SPI bus, TCXO control, RF switch) or the SUBGHZ (SX126x) and registers the IRQ callback.
+	SUBGRF_Init(Radio_DIO_IRq_Callback_Handler);
+
+	// Use DCDC converter if `DCDC_ENABLE` is defined in radio_conf.h
+	// "By default, the SMPS clock detection is disabled and must be enabled before enabling the SMPS." (6.1 in RM0453)
+	SUBGRF_WriteRegister(SUBGHZ_SMPSC0R, (SUBGRF_ReadRegister(SUBGHZ_SMPSC0R) | SMPS_CLK_DET_ENABLE));
+	SUBGRF_SetRegulatorMode(); // use DCDC if configured in radio_conf.h
+
+	// Use the whole 256-byte buffer for both TX and RX (starting at 0)
+	SUBGRF_SetBufferBaseAddress(0x00, 0x00);
+
+	SUBGRF_SetRfFrequency(RF_FREQ);
+	SUBGRF_SetRfTxPower(TX_POWER);
+	SUBGRF_SetStopRxTimerOnPreambleDetect(false);
+
+	SUBGRF_SetPacketType(PACKET_TYPE_LORA);
+
+	// Sets LoRa private syncword (not the public 0x34). Ensures you only talk to your nodes (not public network).
+	SUBGRF_WriteRegister( REG_LR_SYNCWORD, ( LORA_MAC_PRIVATE_SYNCWORD >> 8 ) & 0xFF );
+	SUBGRF_WriteRegister( REG_LR_SYNCWORD + 1, LORA_MAC_PRIVATE_SYNCWORD & 0xFF );
+
+	// Applies SF/BW/CR. Low data rate optimize off (OK for SF7/BW125).
+	ModulationParams_t modulationParams;
+	modulationParams.PacketType = PACKET_TYPE_LORA;
+	modulationParams.Params.LoRa.Bandwidth = LORA_BANDWIDTH;
+	modulationParams.Params.LoRa.CodingRate = (RadioLoRaCodingRates_t)LORA_CODING_RATE;
+	modulationParams.Params.LoRa.LowDatarateOptimize = 0x00;
+	modulationParams.Params.LoRa.SpreadingFactor = (RadioLoRaSpreadingFactors_t)LORA_SPREADING_FACTOR;
+	SUBGRF_SetModulationParams(&modulationParams);
+
+	// CRC on, variable length, normal IQ, long RX FIFO length.
+	packetParams.PacketType = PACKET_TYPE_LORA;
+	packetParams.Params.LoRa.CrcMode = LORA_CRC_ON;
+	packetParams.Params.LoRa.HeaderType = LORA_PACKET_VARIABLE_LENGTH;
+	packetParams.Params.LoRa.InvertIQ = LORA_IQ_NORMAL;
+	packetParams.Params.LoRa.PayloadLength = 0xFF;
+	packetParams.Params.LoRa.PreambleLength = LORA_PREAMBLE_LENGTH;
+	SUBGRF_SetPacketParams(&packetParams);
+
+	// WORKAROUND - Optimizing the Inverted IQ Operation, see DS_SX1261-2_V1.2 datasheet chapter 15.4
+	// RegIqPolaritySetup @address 0x0736
+	// SX126x errata: improves IQ handling (safe even with normal IQ).
+	SUBGRF_WriteRegister( 0x0736, SUBGRF_ReadRegister( 0x0736 ) | ( 1 << 2 ) );
 }
 
 /* USER CODE END 4 */
