@@ -180,7 +180,7 @@ int main(void)
     /* USER CODE END WHILE */
 
 	currentEvent = NULL;
-	while(!currentEvent);
+	while(!currentEvent) HAL_UART_Receive_IT(&huart2, input, 1);
 	currentEvent(&sessionContext);
 
     /* USER CODE BEGIN 3 */
