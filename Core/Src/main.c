@@ -43,17 +43,23 @@
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
 
+#define MAX_BUFFER_SIZE 255
+
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
 
+uint8_t buffer[MAX_BUFFER_SIZE] = "";
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
+
+void UART_Transmit(const char*);
 
 /* USER CODE END PFP */
 
@@ -104,17 +110,13 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
+  snprintf((char*)buffer, MAX_BUFFER_SIZE, "\r\nSTM32 SubGHz LoRa Messenger\r\n");
+  UART_Transmit((char*)buffer);
+
   while (1)
   {
     /* USER CODE END WHILE */
-	  BSP_LED_On(LED_BLUE);
-	  BSP_LED_On(LED_GREEN);
-	  BSP_LED_On(LED_RED);
-	  HAL_Delay(1000);
-	  BSP_LED_Off(LED_BLUE);
-	  BSP_LED_Off(LED_GREEN);
-	  BSP_LED_Off(LED_RED);
-	  HAL_Delay(1000);
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -163,6 +165,10 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+void UART_Transmit(const char* string){
+	HAL_UART_Transmit(&huart2, (uint8_t *)string, strlen(string), HAL_MAX_DELAY);
+}
 
 /* USER CODE END 4 */
 
