@@ -44,6 +44,7 @@ NVIC.PriorityGroup=NVIC_PRIORITYGROUP_4
 NVIC.SUBGHZ_Radio_IRQn=true\:0\:0\:false\:false\:true\:true\:true\:true
 NVIC.SVCall_IRQn=true\:0\:0\:false\:false\:true\:false\:false\:false
 NVIC.SysTick_IRQn=true\:0\:0\:false\:false\:true\:false\:true\:false
+NVIC.USART2_IRQn=true\:0\:0\:false\:false\:true\:true\:true\:true
 NVIC.UsageFault_IRQn=true\:0\:0\:false\:false\:true\:false\:false\:false
 PA2.GPIOParameters=GPIO_Label
 PA2.GPIO_Label=T_VCP_RX

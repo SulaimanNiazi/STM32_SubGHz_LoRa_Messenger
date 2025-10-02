@@ -51,7 +51,11 @@
 
 /* USER CODE BEGIN PV */
 
-uint8_t buffer[MAX_BUFFER_SIZE] = "";
+uint8_t buffer[MAX_BUFFER_SIZE], output[MAX_BUFFER_SIZE], input[1];
+uint16_t count = 0;
+bool messageReady = false;
+char id[MAX_BUFFER_SIZE];
+int idLen = -2;
 
 /* USER CODE END PV */
 
@@ -110,8 +114,14 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  snprintf((char*)buffer, MAX_BUFFER_SIZE, "\r\nSTM32 SubGHz LoRa Messenger\r\n");
+  snprintf((char*)buffer, MAX_BUFFER_SIZE, "\r\nSTM32 SubGHz LoRa Messenger\r\n\r\nPlease Enter an ID: ");
   UART_Transmit((char*)buffer);
+  while(!messageReady)HAL_UART_Receive_IT(&huart2, input, 1);
+  messageReady = false;
+  idLen = snprintf(id, MAX_BUFFER_SIZE, "%s", (char*)output);
+
+  UART_Transmit("Your ID: ");
+  UART_Transmit(id);
 
   while (1)
   {
@@ -168,6 +178,30 @@ void SystemClock_Config(void)
 
 void UART_Transmit(const char* string){
 	HAL_UART_Transmit(&huart2, (uint8_t *)string, strlen(string), HAL_MAX_DELAY);
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
+	switch(input[0]){
+		case 0x0d:
+			UART_Transmit("\r\n");
+			sprintf((char*)output, "%s", (char*)buffer);
+			output[count] = '\0';
+			messageReady = true;
+			break;
+
+		case 0x08:
+			if(count > (idLen + 2)){
+				count--;
+				UART_Transmit("\b \b");
+			}
+			break;
+
+		default:
+			if(count < MAX_BUFFER_SIZE){
+				buffer[count++] = input[0];
+				HAL_UART_Transmit(huart, input, 1, HAL_MAX_DELAY);
+			}
+	}
 }
 
 /* USER CODE END 4 */
