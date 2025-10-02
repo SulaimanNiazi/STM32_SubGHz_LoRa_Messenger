@@ -96,6 +96,7 @@ void interruptTerminal(const char*);
 
 void Radio_Init();
 void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t);
+void rxErrorEvent(SessionContext*);
 
 /* USER CODE END PFP */
 
@@ -298,6 +299,7 @@ void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t radioIRq){
 
 				case MODE_RX:	// RX Timeout
 					interruptTerminal("\r\nRX TIMEOUT\r\n");
+					currentEvent = rxErrorEvent;
 
 					break;
 				default:break;
@@ -358,6 +360,23 @@ void Radio_Init(){
 	// RegIqPolaritySetup @address 0x0736
 	// SX126x errata: improves IQ handling (safe even with normal IQ).
 	SUBGRF_WriteRegister( 0x0736, SUBGRF_ReadRegister( 0x0736 ) | ( 1 << 2 ) );
+}
+
+/** MASTER/RX CRC/header error → treat like “no valid frame” and attempt TX "PING" after random backoff.
+  * SLAVE/RX → simply re-enter RX.
+  */
+void rxErrorEvent(SessionContext *sessionContext){
+	switch (sessionContext->state){
+		case MASTER:
+			interruptTerminal("Entering TX mode");
+			sessionContext->subState = TX;
+			break;
+
+		case SLAVE:
+			interruptTerminal("Entering RX mode");
+			break;
+		default:break;
+	}
 }
 
 /* USER CODE END 4 */
