@@ -92,9 +92,10 @@ void SystemClock_Config(void);
 
 void UART_Transmit(const char*);
 void resetTerminal();
+void interruptTerminal(const char*);
 
 void Radio_Init();
-void Radio_DIO_IRq_Callback_Handler(RadioIrqMasks_t);
+void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t);
 
 /* USER CODE END PFP */
 
@@ -241,6 +242,19 @@ void UART_Transmit(const char* string){
 	HAL_UART_Transmit(&huart2, (uint8_t*)string, strlen(string), HAL_MAX_DELAY);
 }
 
+void resetTerminal(){
+	count = (uint16_t)snprintf((char*)buffer, MAX_BUFFER_SIZE, "%s: ", id);
+	UART_Transmit((char*)buffer);
+}
+
+void interruptTerminal(const char* interruption){
+	for(uint16_t x = 0; x < count; x++) UART_Transmit("\b \b");
+	UART_Transmit("\r\n");
+	UART_Transmit(interruption);
+	UART_Transmit("\r\n\r\n");
+	HAL_UART_Transmit(&huart2, buffer, count, HAL_MAX_DELAY);
+}
+
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	switch(input[0]){
 		case 0xd:
@@ -266,33 +280,25 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	}
 }
 
-void resetTerminal(){
-	UART_Transmit(id);
-	UART_Transmit(": ");
-	count = idLen + 2;
-}
-
-void Radio_DIO_IRq_Callback_Handler(RadioIrqMasks_t radioIRq){
+void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t radioIRq){
 	switch(radioIRq){
 		case IRQ_TX_DONE:
-			UART_Transmit("\r\nTX DONE\r\n");
+			interruptTerminal("\r\nTX DONE\r\n");
 			break;
 
 		case IRQ_RX_DONE:
-			UART_Transmit("\r\nRX DONE\r\n");
+			interruptTerminal("\r\nRX DONE\r\n");
 			break;
 
 		case IRQ_RX_TX_TIMEOUT:
-			UART_Transmit("\r\nTIMEOUT\r\n");
+			interruptTerminal("\r\nTIMEOUT\r\n");
 			break;
 
 		case IRQ_CRC_ERROR: // Rx Error
-			UART_Transmit("\r\nRX CRC ERROR\r\n");
+			interruptTerminal("\r\nRX CRC ERROR\r\n");
 			break;
 		default: break;
 	}
-
-	resetTerminal();
 }
 
 /** Initialize the Sub-GHz radio and dependent hardware.
