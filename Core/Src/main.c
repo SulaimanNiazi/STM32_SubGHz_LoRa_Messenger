@@ -57,6 +57,8 @@ bool messageReady = false;
 char id[MAX_BUFFER_SIZE] = "\r\nSetting your ID as";
 int idLen = -2;
 
+void (*volatile currentEvent)(void);
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -98,7 +100,7 @@ int main(void)
 
   /* USER CODE BEGIN SysInit */
 
-  HAL_Delay(1000);
+  HAL_Delay(3000);
 
   /* USER CODE END SysInit */
 
@@ -127,9 +129,15 @@ int main(void)
   UART_Transmit("\r\n\r\n");
   resetTerminal();
 
+  HAL_NVIC_EnableIRQ(USART2_IRQn);
+
   while (1)
   {
     /* USER CODE END WHILE */
+
+	currentEvent = NULL;
+	while(!currentEvent);
+	currentEvent();
 
     /* USER CODE BEGIN 3 */
   }
