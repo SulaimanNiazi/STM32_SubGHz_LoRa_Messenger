@@ -291,11 +291,22 @@ void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t radioIRq){
 			break;
 
 		case IRQ_RX_TX_TIMEOUT:
-			interruptTerminal("\r\nTIMEOUT\r\n");
+			switch(SUBGRF_GetOperatingMode()){
+				case MODE_TX: // TX Timeout
+					interruptTerminal("\r\nTX TIMEOUT\r\n");
+					break;
+
+				case MODE_RX:	// RX Timeout
+					interruptTerminal("\r\nRX TIMEOUT\r\n");
+
+					break;
+				default:break;
+			}
 			break;
 
 		case IRQ_CRC_ERROR: // Rx Error
 			interruptTerminal("\r\nRX CRC ERROR\r\n");
+
 			break;
 		default: break;
 	}

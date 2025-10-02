@@ -5,5 +5,5 @@
 ../Core/Src/main.c:250:6:interruptTerminal	24	static
 ../Core/Src/main.c:258:6:HAL_UART_RxCpltCallback	16	static
 ../Core/Src/main.c:283:6:Radio_DIO_IRq_Callback_Handler	16	static
-../Core/Src/main.c:306:6:Radio_Init	40	static
-../Core/Src/main.c:358:6:Error_Handler	4	static,ignoring_inline_asm
+../Core/Src/main.c:317:6:Radio_Init	40	static
+../Core/Src/main.c:369:6:Error_Handler	4	static,ignoring_inline_asm
