@@ -79,7 +79,7 @@ typedef struct{
 uint8_t buffer[MAX_BUFFER_SIZE], output[MAX_BUFFER_SIZE], input[1];
 uint16_t count = 0, retries = RETRY_LIMIT;
 bool messageReady = false, connected = false;
-char id[20] = "\r\nSetting your ID as";
+char id[20] = "\r\nSetting your ID as", backup[MAX_BUFFER_SIZE];
 int idLen = -2;
 
 void (*volatile currentEvent)(SessionContext*);
@@ -320,7 +320,9 @@ void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t radioIRq){
 
 		case IRQ_CRC_ERROR: // Rx Error
 			interruptTerminal("RX CRC ERROR");
-
+			sprintf((char*)output, "\\\\\\");	// message to repeat last message
+			output[4] = '\0';
+			messageReady = true;
 			break;
 		default: break;
 	}
@@ -392,7 +394,9 @@ void start_TX_mode(SessionContext *sessionContext)
 	sessionContext->subState = TX;
 
 	if(messageReady){										// Send Message if ready instead of \\\PING / \\\PONG
-		SUBGRF_Transmit(output, strlen((char*)output) + 1);	// + 1 for last null character
+		uint8_t size = sprintf(backup, "%s", (char*)output);
+		backup[size++] = '\0';								// + 1 for last null character
+		SUBGRF_Transmit(output, size);
 		messageReady = false;
 	}else{
 		SUBGRF_Transmit((uint8_t*)((sessionContext->state == MASTER)?"\\\\\\PING":"\\\\\\PONG"), 7);
@@ -426,8 +430,9 @@ void timeout_error_event(SessionContext *sessionContext){
 }
 
 void RX_done_event(SessionContext *sessionContext){
-	Led_TypeDef desiredLED, undesiredLED;
-	char desiredChar;
+	// Initialize with MASTER values
+	Led_TypeDef desiredLED = LED_BLUE, undesiredLED = LED_GREEN;
+	char desiredChar = 'O';
 	PacketStatus_t packetStatus;
 
 	// Workaround 15.3 in DS.SX1261-2.W.APP (following RX w/ timeout sequence fix)
@@ -437,11 +442,7 @@ void RX_done_event(SessionContext *sessionContext){
 	SUBGRF_GetPayload((uint8_t *)sessionContext->rxBuffer, &sessionContext->rxLen, 0xFF);
 	SUBGRF_GetPacketStatus(&packetStatus);
 
-	if(sessionContext->state == MASTER){
-		desiredChar = 'O';
-		desiredLED = LED_BLUE;
-		undesiredLED = LED_GREEN;
-	}else{
+	if(sessionContext->state == SLAVE){
 		desiredChar = 'I';
 		desiredLED = LED_GREEN;
 		undesiredLED = LED_BLUE;
@@ -452,14 +453,20 @@ void RX_done_event(SessionContext *sessionContext){
 			BSP_LED_Off(undesiredLED);
 			BSP_LED_Toggle(desiredLED);
 			start_TX_mode(sessionContext);
-		}else{
+			return;
+		}
+		else if(sessionContext->rxBuffer[4] == '\0'){
+			interruptTerminal("TX CRC Error");
+			int size = sprintf((char*)output, "%s", backup);
+			output[size] = '\0';
+			messageReady = true;
+		}else{								// unDesired char
 			sessionContext->state = SLAVE;
-			start_RX_mode(sessionContext);
 		}
 	}else{
 		interruptTerminal(sessionContext->rxBuffer);
-		start_RX_mode(sessionContext);
 	}
+	start_RX_mode(sessionContext);
 }
 
 /* USER CODE END 4 */
