@@ -64,9 +64,9 @@ typedef struct{
 #define MAX_BUFFER_SIZE 		255
 #define RF_FREQ		 			868000000 	// Hz = 868 MHz - Ranges in PK {433.05 - 434.79}, {865 - 869}, {920 - 925}
 #define TX_POWER		 		14        	// dBm
-#define LORA_BANDWIDTH 			LORA_BW_125	// kHz
-#define LORA_SPREADING_FACTOR 	7		  	// SF7
-#define LORA_CODING_RATE 		1		  	// 4/5
+#define LORA_BANDWIDTH 			LORA_BW_125	// 125 kHz
+#define LORA_SPREADING_FACTOR 	LORA_SF7	// SF7
+#define LORA_CODING_RATE 		LORA_CR_4_5	// 4/5
 #define LORA_PREAMBLE_LENGTH 	8         	// Same for Tx and Rx
 
 /* USER CODE END PM */
@@ -97,6 +97,8 @@ void interruptTerminal(const char*);
 void Radio_Init();
 void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t);
 void rxErrorEvent(SessionContext*);
+void txMode(SessionContext*);
+void SUBGRF_Transmit(uint8_t*, const uint8_t);
 
 /* USER CODE END PFP */
 
@@ -140,8 +142,8 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
-  BSP_LED_Init(LED_BLUE);	// Master
-  BSP_LED_Init(LED_GREEN);	// Slave
+  BSP_LED_Init(LED_BLUE);	// Connected Master
+  BSP_LED_Init(LED_GREEN);	// Connected Slave
   BSP_LED_Init(LED_RED);	// Disconnected
 
   Radio_Init();
@@ -160,7 +162,7 @@ int main(void)
   UART_Transmit("\r\n\r\n");
   resetTerminal();
 
-  BSP_LED_On(LED_RED); // Disconnected at first
+  BSP_LED_On(LED_RED); 			// Disconnected at first
 
   SessionContext sessionContext = {
 		  .state = MASTER,		// Start as Master
@@ -284,11 +286,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t radioIRq){
 	switch(radioIRq){
 		case IRQ_TX_DONE:
-			interruptTerminal("\r\nTX DONE\r\n");
+			interruptTerminal("\r\nTX COMPLETE\r\n");
 			break;
 
 		case IRQ_RX_DONE:
-			interruptTerminal("\r\nRX DONE\r\n");
+			interruptTerminal("\r\nRX COMPLETE\r\n");
 			break;
 
 		case IRQ_RX_TX_TIMEOUT:
@@ -335,16 +337,16 @@ void Radio_Init(){
 	SUBGRF_SetPacketType(PACKET_TYPE_LORA);
 
 	// Sets LoRa private syncword (not the public 0x34). Ensures you only talk to your nodes (not public network).
-	SUBGRF_WriteRegister( REG_LR_SYNCWORD, ( LORA_MAC_PRIVATE_SYNCWORD >> 8 ) & 0xFF );
-	SUBGRF_WriteRegister( REG_LR_SYNCWORD + 1, LORA_MAC_PRIVATE_SYNCWORD & 0xFF );
+	SUBGRF_WriteRegister(REG_LR_SYNCWORD, (LORA_MAC_PRIVATE_SYNCWORD >> 8) & 0xFF);
+	SUBGRF_WriteRegister(REG_LR_SYNCWORD + 1, LORA_MAC_PRIVATE_SYNCWORD & 0xFF);
 
 	// Applies SF/BW/CR. Low data rate optimize off (OK for SF7/BW125).
 	ModulationParams_t modulationParams;
 	modulationParams.PacketType = PACKET_TYPE_LORA;
 	modulationParams.Params.LoRa.Bandwidth = LORA_BANDWIDTH;
-	modulationParams.Params.LoRa.CodingRate = (RadioLoRaCodingRates_t)LORA_CODING_RATE;
+	modulationParams.Params.LoRa.CodingRate = LORA_CODING_RATE;
 	modulationParams.Params.LoRa.LowDatarateOptimize = 0x00;
-	modulationParams.Params.LoRa.SpreadingFactor = (RadioLoRaSpreadingFactors_t)LORA_SPREADING_FACTOR;
+	modulationParams.Params.LoRa.SpreadingFactor = LORA_SPREADING_FACTOR;
 	SUBGRF_SetModulationParams(&modulationParams);
 
 	// CRC on, variable length, normal IQ, long RX FIFO length.
@@ -359,7 +361,7 @@ void Radio_Init(){
 	// WORKAROUND - Optimizing the Inverted IQ Operation, see DS_SX1261-2_V1.2 datasheet chapter 15.4
 	// RegIqPolaritySetup @address 0x0736
 	// SX126x errata: improves IQ handling (safe even with normal IQ).
-	SUBGRF_WriteRegister( 0x0736, SUBGRF_ReadRegister( 0x0736 ) | ( 1 << 2 ) );
+	SUBGRF_WriteRegister(0x0736, SUBGRF_ReadRegister(0x0736) | (1 << 2));
 }
 
 /** MASTER/RX CRC/header error → treat like “no valid frame” and attempt TX "PING" after random backoff.
@@ -370,6 +372,7 @@ void rxErrorEvent(SessionContext *sessionContext){
 		case MASTER:
 			interruptTerminal("Entering TX mode");
 			sessionContext->subState = TX;
+			txMode(sessionContext);
 			break;
 
 		case SLAVE:
@@ -377,6 +380,32 @@ void rxErrorEvent(SessionContext *sessionContext){
 			break;
 		default:break;
 	}
+}
+
+void txMode(SessionContext *sessionContext)
+{
+	HAL_Delay(sessionContext->txDelay);
+
+	if(messageReady){										// Send Message if ready instead of \\\PING / \\\PONG
+		SUBGRF_Transmit(output, strlen((char*)output) + 1);	// + 1 for last null character
+		messageReady = false;
+		interruptTerminal("Sent Message");
+	}else{
+		SUBGRF_Transmit((uint8_t*)((sessionContext->state == MASTER)?"\\\\\\PING":"\\\\\\PONG"), 7);
+		interruptTerminal("Sent PING/PONG");
+	}
+}
+
+void SUBGRF_Transmit(uint8_t* payload, const uint8_t size){
+	uint16_t mask = IRQ_TX_DONE | IRQ_RX_TX_TIMEOUT;
+	SUBGRF_SetDioIrqParams(mask, mask, IRQ_RADIO_NONE, IRQ_RADIO_NONE);
+	SUBGRF_SetSwitch(RFO_LP, RFSWITCH_TX);
+	// Workaround 5.1 in DS.SX1261-2.W.APP (before each packet transmission)
+	// SX126x errata 5.1: set bit before each TX
+	SUBGRF_WriteRegister(0x0889, (SUBGRF_ReadRegister(0x0889) | 0x04));
+	packetParams.Params.LoRa.PayloadLength = size;
+	SUBGRF_SetPacketParams(&packetParams);
+	SUBGRF_SendPayload(payload, size, 0);
 }
 
 /* USER CODE END 4 */
