@@ -99,6 +99,7 @@ void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t);
 void SUBGRF_Transmit(uint8_t*, const uint8_t);
 
 void RX_error_event(SessionContext*);
+void RX_done_event(SessionContext*);
 void start_RX_mode(SessionContext*);
 void start_TX_mode(SessionContext*);
 
@@ -290,6 +291,8 @@ void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t radioIRq){
 
 		case IRQ_RX_DONE:
 			interruptTerminal("RX COMPLETE");
+			BSP_LED_Off(LED_RED);
+			currentEvent = RX_done_event;
 			break;
 
 		case IRQ_RX_TX_TIMEOUT:
@@ -299,6 +302,7 @@ void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t radioIRq){
 					break;
 
 				case MODE_RX:	// RX Timeout
+					BSP_LED_On(LED_RED);
 					interruptTerminal("RX TIMEOUT");
 					currentEvent = RX_error_event;
 
@@ -420,6 +424,44 @@ void RX_error_event(SessionContext *sessionContext){
 			start_RX_mode(sessionContext);
 			break;
 		default:break;
+	}
+}
+
+void RX_done_event(SessionContext *sessionContext){
+	Led_TypeDef desiredLED, undesiredLED;
+	char desiredChar;
+	PacketStatus_t packetStatus;
+
+	// Workaround 15.3 in DS.SX1261-2.W.APP (following RX w/ timeout sequence fix)
+	SUBGRF_WriteRegister(0x0920, 0x00);
+	SUBGRF_WriteRegister(0x0944, (SUBGRF_ReadRegister(0x0944) | 0x02));
+
+	SUBGRF_GetPayload((uint8_t *)sessionContext->rxBuffer, &sessionContext->rxLen, 0xFF);
+	SUBGRF_GetPacketStatus(&packetStatus);
+
+	if(sessionContext->state == MASTER){
+		desiredChar = 'O';
+		desiredLED = LED_BLUE;
+		undesiredLED = LED_GREEN;
+	}else{
+		desiredChar = 'I';
+		desiredLED = LED_GREEN;
+		undesiredLED = LED_BLUE;
+	}
+
+	if ((sessionContext->rxBuffer[0] == '\\') && (sessionContext->rxBuffer[1] == '\\') && (sessionContext->rxBuffer[2] == '\\')){
+		if(sessionContext->rxBuffer[4] == desiredChar){
+			BSP_LED_Off(undesiredLED);
+			BSP_LED_Toggle(desiredLED);
+			sessionContext->subState = TX;
+			start_TX_mode(sessionContext);
+		}else{
+			sessionContext->state = SLAVE;
+			start_RX_mode(sessionContext);
+		}
+	}else{
+		interruptTerminal(sessionContext->rxBuffer);
+		start_RX_mode(sessionContext);
 	}
 }
 
