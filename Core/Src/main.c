@@ -79,7 +79,7 @@ typedef struct{
 uint8_t buffer[MAX_BUFFER_SIZE], output[MAX_BUFFER_SIZE], input[1];
 uint16_t count = 0, retries = RETRY_LIMIT;
 bool messageReady = false, connected = false;
-char id[MAX_BUFFER_SIZE] = "\r\nSetting your ID as";
+char id[20] = "\r\nSetting your ID as";
 int idLen = -2;
 
 void (*volatile currentEvent)(SessionContext*);
@@ -157,11 +157,11 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  snprintf((char*)buffer, MAX_BUFFER_SIZE, "\r\nSTM32 SubGHz LoRa Messenger\r\n\r\nPlease Enter an ID: ");
+  snprintf((char*)buffer, MAX_BUFFER_SIZE, "\r\n\r\nSTM32 SubGHz LoRa Messenger\r\n\r\nPlease Enter an ID of maximum 20 characters: ");
   UART_Transmit((char*)buffer);
   while(!messageReady) HAL_UART_Receive_IT(&huart2, input, 1);
   HAL_NVIC_DisableIRQ(USART2_IRQn);
-  idLen = snprintf(id, MAX_BUFFER_SIZE, "%s", (char*)output);
+  idLen = snprintf(id, 20, "%s", (char*)output);
   UART_Transmit(id);
   UART_Transmit("\r\n\r\n");
   resetTerminal();
