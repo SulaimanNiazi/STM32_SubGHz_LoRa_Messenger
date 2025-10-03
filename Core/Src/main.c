@@ -166,14 +166,15 @@ int main(void)
   UART_Transmit("\r\n\r\n");
   resetTerminal();
 
-  BSP_LED_On(LED_RED); 				// Disconnected at first
+  BSP_LED_On(LED_RED); 							// Disconnected at first
 
   SessionContext sessionContext = {
-		  .state = MASTER,			// Start as Master
-		  .rxTimeout = 3000,		// ms
-		  .txDelay = 100 			// ms
+		  .state = MASTER,						// Start as Master
+		  .rxTimeout = 3000,					// ms
+		  // get random number from Radio's RNG (from RSSI noise)
+		  .txDelay = SUBGRF_GetRandom() >> 22	// (0 to 1023) ms
   };
-  start_RX_mode(&sessionContext);	// Start by listening
+  start_RX_mode(&sessionContext);				// Start by listening
 
   HAL_NVIC_EnableIRQ(USART2_IRQn);
   messageReady = false;
