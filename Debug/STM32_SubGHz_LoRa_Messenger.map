@@ -5072,7 +5072,7 @@ LOAD C:/ST/STM32CubeIDE_1.17.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
 .rel.dyn        0x080079f4        0x0
  .rel.iplt      0x080079f4        0x0 C:/ST/STM32CubeIDE_1.17.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m/nofp/crtbegin.o
 
-.data           0x20000000       0x84 load address 0x080079f4
+.data           0x20000000       0x88 load address 0x080079f4
                 0x20000000                        . = ALIGN (0x4)
                 0x20000000                        _sdata = .
  *(.data)
@@ -5080,119 +5080,121 @@ LOAD C:/ST/STM32CubeIDE_1.17.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .data.retries  0x20000000        0x2 ./Core/Src/main.o
                 0x20000000                retries
  *fill*         0x20000002        0x2 
- .data.id       0x20000004       0x14 ./Core/Src/main.o
+ .data.id       0x20000004       0x15 ./Core/Src/main.o
                 0x20000004                id
- .data.idLen    0x20000018        0x4 ./Core/Src/main.o
-                0x20000018                idLen
+ *fill*         0x20000019        0x3 
+ .data.idLen    0x2000001c        0x4 ./Core/Src/main.o
+                0x2000001c                idLen
  .data.SystemCoreClock
-                0x2000001c        0x4 ./Core/Src/system_stm32wlxx.o
-                0x2000001c                SystemCoreClock
+                0x20000020        0x4 ./Core/Src/system_stm32wlxx.o
+                0x20000020                SystemCoreClock
  .data.LED_PORT
-                0x20000020        0xc ./Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.o
+                0x20000024        0xc ./Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.o
  .data.uwTickPrio
-                0x2000002c        0x4 ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal.o
-                0x2000002c                uwTickPrio
+                0x20000030        0x4 ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal.o
+                0x20000030                uwTickPrio
  .data.uwTickFreq
-                0x20000030        0x1 ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal.o
-                0x20000030                uwTickFreq
- *fill*         0x20000031        0x3 
+                0x20000034        0x1 ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal.o
+                0x20000034                uwTickFreq
+ *fill*         0x20000035        0x3 
  .data._impure_ptr
-                0x20000034        0x4 C:/ST/STM32CubeIDE_1.17.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libc_nano.a(libc_a-impure.o)
-                0x20000034                _impure_ptr
+                0x20000038        0x4 C:/ST/STM32CubeIDE_1.17.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libc_nano.a(libc_a-impure.o)
+                0x20000038                _impure_ptr
  .data._impure_data
-                0x20000038       0x4c C:/ST/STM32CubeIDE_1.17.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libc_nano.a(libc_a-impure.o)
-                0x20000038                _impure_data
+                0x2000003c       0x4c C:/ST/STM32CubeIDE_1.17.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libc_nano.a(libc_a-impure.o)
+                0x2000003c                _impure_data
  *(.RamFunc)
  *(.RamFunc*)
-                0x20000084                        . = ALIGN (0x4)
-                0x20000084                        _edata = .
+                0x20000088                        . = ALIGN (0x4)
+                0x20000088                        _edata = .
 
-.igot.plt       0x20000084        0x0 load address 0x08007a78
- .igot.plt      0x20000084        0x0 C:/ST/STM32CubeIDE_1.17.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m/nofp/crtbegin.o
-                0x20000084                        . = ALIGN (0x4)
+.igot.plt       0x20000088        0x0 load address 0x08007a7c
+ .igot.plt      0x20000088        0x0 C:/ST/STM32CubeIDE_1.17.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m/nofp/crtbegin.o
+                0x20000088                        . = ALIGN (0x4)
 
-.bss            0x20000084      0x53c load address 0x08007a78
-                0x20000084                        _sbss = .
-                0x20000084                        __bss_start__ = _sbss
+.bss            0x20000088      0x53c load address 0x08007a7c
+                0x20000088                        _sbss = .
+                0x20000088                        __bss_start__ = _sbss
  *(.bss)
- .bss           0x20000084       0x1c C:/ST/STM32CubeIDE_1.17.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m/nofp/crtbegin.o
+ .bss           0x20000088       0x1c C:/ST/STM32CubeIDE_1.17.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m/nofp/crtbegin.o
  *(.bss*)
- .bss.buffer    0x200000a0      0x100 ./Core/Src/main.o
-                0x200000a0                buffer
- .bss.output    0x200001a0      0x100 ./Core/Src/main.o
-                0x200001a0                output
- .bss.input     0x200002a0        0x1 ./Core/Src/main.o
-                0x200002a0                input
- *fill*         0x200002a1        0x1 
- .bss.count     0x200002a2        0x2 ./Core/Src/main.o
-                0x200002a2                count
+ .bss.buffer    0x200000a4      0x100 ./Core/Src/main.o
+                0x200000a4                buffer
+ .bss.output    0x200001a4      0x100 ./Core/Src/main.o
+                0x200001a4                output
+ .bss.input     0x200002a4        0x1 ./Core/Src/main.o
+                0x200002a4                input
+ *fill*         0x200002a5        0x1 
+ .bss.count     0x200002a6        0x2 ./Core/Src/main.o
+                0x200002a6                count
  .bss.messageReady
-                0x200002a4        0x1 ./Core/Src/main.o
-                0x200002a4                messageReady
+                0x200002a8        0x1 ./Core/Src/main.o
+                0x200002a8                messageReady
  .bss.connected
-                0x200002a5        0x1 ./Core/Src/main.o
-                0x200002a5                connected
- *fill*         0x200002a6        0x2 
- .bss.backup    0x200002a8      0x100 ./Core/Src/main.o
-                0x200002a8                backup
+                0x200002a9        0x1 ./Core/Src/main.o
+                0x200002a9                connected
+ *fill*         0x200002aa        0x2 
+ .bss.backup    0x200002ac      0x100 ./Core/Src/main.o
+                0x200002ac                backup
  .bss.currentEvent
-                0x200003a8        0x4 ./Core/Src/main.o
-                0x200003a8                currentEvent
+                0x200003ac        0x4 ./Core/Src/main.o
+                0x200003ac                currentEvent
  .bss.packetParams
-                0x200003ac       0x14 ./Core/Src/main.o
-                0x200003ac                packetParams
- .bss.hsubghz   0x200003c0        0xc ./Core/Src/subghz.o
-                0x200003c0                hsubghz
+                0x200003b0       0x14 ./Core/Src/main.o
+                0x200003b0                packetParams
+ .bss.hsubghz   0x200003c4        0xc ./Core/Src/subghz.o
+                0x200003c4                hsubghz
  .bss.__sbrk_heap_end
-                0x200003cc        0x4 ./Core/Src/sysmem.o
- .bss.huart2    0x200003d0       0x94 ./Core/Src/usart.o
-                0x200003d0                huart2
+                0x200003d0        0x4 ./Core/Src/sysmem.o
+ .bss.huart2    0x200003d4       0x94 ./Core/Src/usart.o
+                0x200003d4                huart2
  .bss.OperatingMode
-                0x20000464        0x1 ./Drivers/Radio_Driver/radio_driver.o
+                0x20000468        0x1 ./Drivers/Radio_Driver/radio_driver.o
  .bss.PacketType
-                0x20000465        0x1 ./Drivers/Radio_Driver/radio_driver.o
+                0x20000469        0x1 ./Drivers/Radio_Driver/radio_driver.o
  .bss.LoRaHeaderType
-                0x20000466        0x1 ./Drivers/Radio_Driver/radio_driver.o
- *fill*         0x20000467        0x1 
+                0x2000046a        0x1 ./Drivers/Radio_Driver/radio_driver.o
+ *fill*         0x2000046b        0x1 
  .bss.FrequencyError
-                0x20000468        0x4 ./Drivers/Radio_Driver/radio_driver.o
-                0x20000468                FrequencyError
+                0x2000046c        0x4 ./Drivers/Radio_Driver/radio_driver.o
+                0x2000046c                FrequencyError
  .bss.ImageCalibrated
-                0x2000046c        0x1 ./Drivers/Radio_Driver/radio_driver.o
- *fill*         0x2000046d        0x3 
+                0x20000470        0x1 ./Drivers/Radio_Driver/radio_driver.o
+ *fill*         0x20000471        0x3 
  .bss.RadioOnDioIrqCb
-                0x20000470        0x4 ./Drivers/Radio_Driver/radio_driver.o
- .bss.uwTick    0x20000474        0x4 ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal.o
-                0x20000474                uwTick
- .bss.__sf      0x20000478      0x138 C:/ST/STM32CubeIDE_1.17.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libc_nano.a(libc_a-findfp.o)
-                0x20000478                __sf
- .bss.errno     0x200005b0        0x4 C:/ST/STM32CubeIDE_1.17.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libc_nano.a(libc_a-reent.o)
-                0x200005b0                errno
+                0x20000474        0x4 ./Drivers/Radio_Driver/radio_driver.o
+ .bss.uwTick    0x20000478        0x4 ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal.o
+                0x20000478                uwTick
+ .bss.__sf      0x2000047c      0x138 C:/ST/STM32CubeIDE_1.17.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libc_nano.a(libc_a-findfp.o)
+                0x2000047c                __sf
+ .bss.errno     0x200005b4        0x4 C:/ST/STM32CubeIDE_1.17.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libc_nano.a(libc_a-reent.o)
+                0x200005b4                errno
  .bss.__lock___malloc_recursive_mutex
-                0x200005b4        0x1 C:/ST/STM32CubeIDE_1.17.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libc_nano.a(libc_a-lock.o)
-                0x200005b4                __lock___malloc_recursive_mutex
- *fill*         0x200005b5        0x3 
+                0x200005b8        0x1 C:/ST/STM32CubeIDE_1.17.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libc_nano.a(libc_a-lock.o)
+                0x200005b8                __lock___malloc_recursive_mutex
+ *fill*         0x200005b9        0x3 
  .bss.__malloc_sbrk_start
-                0x200005b8        0x4 C:/ST/STM32CubeIDE_1.17.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libc_nano.a(libc_a-mallocr.o)
-                0x200005b8                __malloc_sbrk_start
- .bss.__malloc_free_list
                 0x200005bc        0x4 C:/ST/STM32CubeIDE_1.17.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libc_nano.a(libc_a-mallocr.o)
-                0x200005bc                __malloc_free_list
+                0x200005bc                __malloc_sbrk_start
+ .bss.__malloc_free_list
+                0x200005c0        0x4 C:/ST/STM32CubeIDE_1.17.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libc_nano.a(libc_a-mallocr.o)
+                0x200005c0                __malloc_free_list
  *(COMMON)
-                0x200005c0                        . = ALIGN (0x4)
-                0x200005c0                        _ebss = .
-                0x200005c0                        __bss_end__ = _ebss
+                0x200005c4                        . = ALIGN (0x4)
+                0x200005c4                        _ebss = .
+                0x200005c4                        __bss_end__ = _ebss
 
 ._user_heap_stack
-                0x200005c0      0x600 load address 0x08007a78
-                0x200005c0                        . = ALIGN (0x8)
+                0x200005c4      0x604 load address 0x08007a7c
+                0x200005c8                        . = ALIGN (0x8)
+ *fill*         0x200005c4        0x4 
                 [!provide]                        PROVIDE (end = .)
-                0x200005c0                        PROVIDE (_end = .)
-                0x200007c0                        . = (. + _Min_Heap_Size)
- *fill*         0x200005c0      0x200 
-                0x20000bc0                        . = (. + _Min_Stack_Size)
- *fill*         0x200007c0      0x400 
-                0x20000bc0                        . = ALIGN (0x8)
+                0x200005c8                        PROVIDE (_end = .)
+                0x200007c8                        . = (. + _Min_Heap_Size)
+ *fill*         0x200005c8      0x200 
+                0x20000bc8                        . = (. + _Min_Stack_Size)
+ *fill*         0x200007c8      0x400 
+                0x20000bc8                        . = ALIGN (0x8)
 
 /DISCARD/
  libc.a(*)
@@ -5582,32 +5584,32 @@ LOAD C:/ST/STM32CubeIDE_1.17.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .debug_macro   0x0001e6e4       0x9e ./Utils/misc/stm32_mem.o
  .debug_macro   0x0001e782      0x112 ./Utils/misc/stm32_mem.o
 
-.debug_line     0x00000000    0x15aea
+.debug_line     0x00000000    0x15ae3
  .debug_line    0x00000000      0x811 ./Core/Src/gpio.o
- .debug_line    0x00000811      0xfc5 ./Core/Src/main.o
- .debug_line    0x000017d6      0x7dc ./Core/Src/stm32wlxx_hal_msp.o
- .debug_line    0x00001fb2      0x8bf ./Core/Src/stm32wlxx_it.o
- .debug_line    0x00002871      0x85e ./Core/Src/subghz.o
- .debug_line    0x000030cf      0x588 ./Core/Src/sysmem.o
- .debug_line    0x00003657      0x877 ./Core/Src/system_stm32wlxx.o
- .debug_line    0x00003ece      0x8f6 ./Core/Src/usart.o
- .debug_line    0x000047c4       0x7b ./Core/Startup/startup_stm32wl55jcix.o
- .debug_line    0x0000483f      0xa69 ./Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.o
- .debug_line    0x000052a8      0x938 ./Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo_radio.o
- .debug_line    0x00005be0      0x98e ./Drivers/Radio_Driver/radio_board_if.o
- .debug_line    0x0000656e     0x1976 ./Drivers/Radio_Driver/radio_driver.o
- .debug_line    0x00007ee4      0xf91 ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal.o
- .debug_line    0x00008e75      0xd7e ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_cortex.o
- .debug_line    0x00009bf3      0xfae ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_dma.o
- .debug_line    0x0000aba1      0xbdf ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_gpio.o
- .debug_line    0x0000b780      0xa5d ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_pwr.o
- .debug_line    0x0000c1dd      0xf13 ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_pwr_ex.o
- .debug_line    0x0000d0f0     0x1984 ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_rcc.o
- .debug_line    0x0000ea74     0x163f ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_rcc_ex.o
- .debug_line    0x000100b3      0xffc ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_subghz.o
- .debug_line    0x000110af     0x362c ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_uart.o
- .debug_line    0x000146db      0xd54 ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_uart_ex.o
- .debug_line    0x0001542f      0x6bb ./Utils/misc/stm32_mem.o
+ .debug_line    0x00000811      0xfbe ./Core/Src/main.o
+ .debug_line    0x000017cf      0x7dc ./Core/Src/stm32wlxx_hal_msp.o
+ .debug_line    0x00001fab      0x8bf ./Core/Src/stm32wlxx_it.o
+ .debug_line    0x0000286a      0x85e ./Core/Src/subghz.o
+ .debug_line    0x000030c8      0x588 ./Core/Src/sysmem.o
+ .debug_line    0x00003650      0x877 ./Core/Src/system_stm32wlxx.o
+ .debug_line    0x00003ec7      0x8f6 ./Core/Src/usart.o
+ .debug_line    0x000047bd       0x7b ./Core/Startup/startup_stm32wl55jcix.o
+ .debug_line    0x00004838      0xa69 ./Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo.o
+ .debug_line    0x000052a1      0x938 ./Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo_radio.o
+ .debug_line    0x00005bd9      0x98e ./Drivers/Radio_Driver/radio_board_if.o
+ .debug_line    0x00006567     0x1976 ./Drivers/Radio_Driver/radio_driver.o
+ .debug_line    0x00007edd      0xf91 ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal.o
+ .debug_line    0x00008e6e      0xd7e ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_cortex.o
+ .debug_line    0x00009bec      0xfae ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_dma.o
+ .debug_line    0x0000ab9a      0xbdf ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_gpio.o
+ .debug_line    0x0000b779      0xa5d ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_pwr.o
+ .debug_line    0x0000c1d6      0xf13 ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_pwr_ex.o
+ .debug_line    0x0000d0e9     0x1984 ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_rcc.o
+ .debug_line    0x0000ea6d     0x163f ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_rcc_ex.o
+ .debug_line    0x000100ac      0xffc ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_subghz.o
+ .debug_line    0x000110a8     0x362c ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_uart.o
+ .debug_line    0x000146d4      0xd54 ./Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_uart_ex.o
+ .debug_line    0x00015428      0x6bb ./Utils/misc/stm32_mem.o
 
 .debug_str      0x00000000    0xb696c
  .debug_str     0x00000000    0xb696c ./Core/Src/gpio.o

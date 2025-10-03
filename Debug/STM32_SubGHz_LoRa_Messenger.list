@@ -9,39 +9,39 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
   2 .rodata       000001ec  080077f8  080077f8  000087f8  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  3 .ARM.extab    00000000  080079e4  080079e4  00009084  2**0
+  3 .ARM.extab    00000000  080079e4  080079e4  00009088  2**0
                   CONTENTS, READONLY
   4 .ARM          00000008  080079e4  080079e4  000089e4  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  5 .preinit_array 00000000  080079ec  080079ec  00009084  2**0
+  5 .preinit_array 00000000  080079ec  080079ec  00009088  2**0
                   CONTENTS, ALLOC, LOAD, DATA
   6 .init_array   00000004  080079ec  080079ec  000089ec  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
   7 .fini_array   00000004  080079f0  080079f0  000089f0  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  8 .data         00000084  20000000  080079f4  00009000  2**2
+  8 .data         00000088  20000000  080079f4  00009000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  9 .bss          0000053c  20000084  08007a78  00009084  2**2
+  9 .bss          0000053c  20000088  08007a7c  00009088  2**2
                   ALLOC
- 10 ._user_heap_stack 00000600  200005c0  08007a78  000095c0  2**0
+ 10 ._user_heap_stack 00000604  200005c4  08007a7c  000095c4  2**0
                   ALLOC
- 11 .ARM.attributes 0000002a  00000000  00000000  00009084  2**0
+ 11 .ARM.attributes 0000002a  00000000  00000000  00009088  2**0
                   CONTENTS, READONLY
- 12 .debug_info   00015d54  00000000  00000000  000090ae  2**0
+ 12 .debug_info   00015d54  00000000  00000000  000090b2  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 0000360c  00000000  00000000  0001ee02  2**0
+ 13 .debug_abbrev 0000360c  00000000  00000000  0001ee06  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 000015a0  00000000  00000000  00022410  2**3
+ 14 .debug_aranges 000015a0  00000000  00000000  00022418  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_rnglists 0000104a  00000000  00000000  000239b0  2**0
+ 15 .debug_rnglists 0000104a  00000000  00000000  000239b8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  0001e894  00000000  00000000  000249fa  2**0
+ 16 .debug_macro  0001e894  00000000  00000000  00024a02  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00015aea  00000000  00000000  0004328e  2**0
+ 17 .debug_line   00015ae3  00000000  00000000  00043296  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    000b696c  00000000  00000000  00058d78  2**0
+ 18 .debug_str    000b696c  00000000  00000000  00058d79  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000043  00000000  00000000  0010f6e4  2**0
+ 19 .comment      00000043  00000000  00000000  0010f6e5  2**0
                   CONTENTS, READONLY
  20 .debug_frame  00005da4  00000000  00000000  0010f728  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
@@ -62,7 +62,7 @@ Disassembly of section .text:
  8000152:	2301      	movs	r3, #1
  8000154:	7023      	strb	r3, [r4, #0]
  8000156:	bd10      	pop	{r4, pc}
- 8000158:	20000084 	.word	0x20000084
+ 8000158:	20000088 	.word	0x20000088
  800015c:	00000000 	.word	0x00000000
  8000160:	080077e0 	.word	0x080077e0
 
@@ -75,7 +75,7 @@ Disassembly of section .text:
  800016e:	f3af 8000 	nop.w
  8000172:	bd08      	pop	{r3, pc}
  8000174:	00000000 	.word	0x00000000
- 8000178:	20000088 	.word	0x20000088
+ 8000178:	2000008c 	.word	0x2000008c
  800017c:	080077e0 	.word	0x080077e0
 
 08000180 <strlen>:
@@ -702,16 +702,16 @@ int main(void)
  80006dc:	e7ec      	b.n	80006b8 <main+0xdc>
  80006de:	bf00      	nop
  80006e0:	080077f8 	.word	0x080077f8
- 80006e4:	200000a0 	.word	0x200000a0
- 80006e8:	200002a0 	.word	0x200002a0
- 80006ec:	200003d0 	.word	0x200003d0
- 80006f0:	200002a4 	.word	0x200002a4
- 80006f4:	200001a0 	.word	0x200001a0
+ 80006e4:	200000a4 	.word	0x200000a4
+ 80006e8:	200002a4 	.word	0x200002a4
+ 80006ec:	200003d4 	.word	0x200003d4
+ 80006f0:	200002a8 	.word	0x200002a8
+ 80006f4:	200001a4 	.word	0x200001a4
  80006f8:	0800784c 	.word	0x0800784c
  80006fc:	20000004 	.word	0x20000004
- 8000700:	20000018 	.word	0x20000018
+ 8000700:	2000001c 	.word	0x2000001c
  8000704:	08007850 	.word	0x08007850
- 8000708:	200003a8 	.word	0x200003a8
+ 8000708:	200003ac 	.word	0x200003ac
 
 0800070c <SystemClock_Config>:
 /**
@@ -853,14 +853,14 @@ void UART_Transmit(const char* string){
  80007d2:	46bd      	mov	sp, r7
  80007d4:	bd80      	pop	{r7, pc}
  80007d6:	bf00      	nop
- 80007d8:	200003d0 	.word	0x200003d0
+ 80007d8:	200003d4 	.word	0x200003d4
 
 080007dc <resetTerminal>:
 
 void resetTerminal(){
  80007dc:	b580      	push	{r7, lr}
  80007de:	af00      	add	r7, sp, #0
-	count = (uint16_t)snprintf((char*)buffer, MAX_BUFFER_SIZE, "%s: ", id);
+	count = snprintf((char*)buffer, MAX_BUFFER_SIZE, "%s: ", id);
  80007e0:	4b07      	ldr	r3, [pc, #28]	@ (8000800 <resetTerminal+0x24>)
  80007e2:	4a08      	ldr	r2, [pc, #32]	@ (8000804 <resetTerminal+0x28>)
  80007e4:	f44f 7180 	mov.w	r1, #256	@ 0x100
@@ -878,8 +878,8 @@ void resetTerminal(){
  80007fe:	bd80      	pop	{r7, pc}
  8000800:	20000004 	.word	0x20000004
  8000804:	08007858 	.word	0x08007858
- 8000808:	200000a0 	.word	0x200000a0
- 800080c:	200002a2 	.word	0x200002a2
+ 8000808:	200000a4 	.word	0x200000a4
+ 800080c:	200002a6 	.word	0x200002a6
 
 08000810 <interruptTerminal>:
 
@@ -925,11 +925,11 @@ void interruptTerminal(const char* interruption){
  800085c:	bd80      	pop	{r7, pc}
  800085e:	bf00      	nop
  8000860:	08007860 	.word	0x08007860
- 8000864:	200002a2 	.word	0x200002a2
+ 8000864:	200002a6 	.word	0x200002a6
  8000868:	08007864 	.word	0x08007864
  800086c:	08007850 	.word	0x08007850
- 8000870:	200000a0 	.word	0x200000a0
- 8000874:	200003d0 	.word	0x200003d0
+ 8000870:	200000a4 	.word	0x200000a4
+ 8000874:	200003d4 	.word	0x200003d4
 
 08000878 <HAL_UART_RxCpltCallback>:
 
@@ -1034,14 +1034,14 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
  8000912:	3708      	adds	r7, #8
  8000914:	46bd      	mov	sp, r7
  8000916:	bd80      	pop	{r7, pc}
- 8000918:	200002a0 	.word	0x200002a0
+ 8000918:	200002a4 	.word	0x200002a4
  800091c:	08007864 	.word	0x08007864
- 8000920:	200000a0 	.word	0x200000a0
+ 8000920:	200000a4 	.word	0x200000a4
  8000924:	0800784c 	.word	0x0800784c
- 8000928:	200001a0 	.word	0x200001a0
- 800092c:	200002a2 	.word	0x200002a2
- 8000930:	200002a4 	.word	0x200002a4
- 8000934:	20000018 	.word	0x20000018
+ 8000928:	200001a4 	.word	0x200001a4
+ 800092c:	200002a6 	.word	0x200002a6
+ 8000930:	200002a8 	.word	0x200002a8
+ 8000934:	2000001c 	.word	0x2000001c
  8000938:	08007860 	.word	0x08007860
 
 0800093c <Radio_DIO_IRq_Callback_Handler>:
@@ -1170,9 +1170,9 @@ void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t radioIRq){
  8000a02:	46bd      	mov	sp, r7
  8000a04:	bd80      	pop	{r7, pc}
  8000a06:	bf00      	nop
- 8000a08:	200003a8 	.word	0x200003a8
+ 8000a08:	200003ac 	.word	0x200003ac
  8000a0c:	08000bf1 	.word	0x08000bf1
- 8000a10:	200002a5 	.word	0x200002a5
+ 8000a10:	200002a9 	.word	0x200002a9
  8000a14:	20000000 	.word	0x20000000
  8000a18:	08007868 	.word	0x08007868
  8000a1c:	08000c65 	.word	0x08000c65
@@ -1310,7 +1310,7 @@ void Radio_Init(){
  8000afa:	bf00      	nop
  8000afc:	0800093d 	.word	0x0800093d
  8000b00:	33bca100 	.word	0x33bca100
- 8000b04:	200003ac 	.word	0x200003ac
+ 8000b04:	200003b0 	.word	0x200003b0
 
 08000b08 <SUBGRF_Transmit>:
 
@@ -1363,7 +1363,7 @@ void SUBGRF_Transmit(uint8_t* payload, const uint8_t size){
  8000b62:	3710      	adds	r7, #16
  8000b64:	46bd      	mov	sp, r7
  8000b66:	bd80      	pop	{r7, pc}
- 8000b68:	200003ac 	.word	0x200003ac
+ 8000b68:	200003b0 	.word	0x200003b0
 
 08000b6c <start_TX_mode>:
 
@@ -1433,10 +1433,10 @@ void start_TX_mode(SessionContext *sessionContext)
  8000bd2:	3710      	adds	r7, #16
  8000bd4:	46bd      	mov	sp, r7
  8000bd6:	bd80      	pop	{r7, pc}
- 8000bd8:	200002a4 	.word	0x200002a4
- 8000bdc:	200001a0 	.word	0x200001a0
+ 8000bd8:	200002a8 	.word	0x200002a8
+ 8000bdc:	200001a4 	.word	0x200001a4
  8000be0:	0800784c 	.word	0x0800784c
- 8000be4:	200002a8 	.word	0x200002a8
+ 8000be4:	200002ac 	.word	0x200002ac
  8000be8:	080078a4 	.word	0x080078a4
  8000bec:	080078ac 	.word	0x080078ac
 
@@ -1487,7 +1487,7 @@ void start_RX_mode(SessionContext *sessionContext){
  8000c32:	3710      	adds	r7, #16
  8000c34:	46bd      	mov	sp, r7
  8000c36:	bd80      	pop	{r7, pc}
- 8000c38:	200003ac 	.word	0x200003ac
+ 8000c38:	200003b0 	.word	0x200003b0
 
 08000c3c <error_event>:
 
@@ -1651,7 +1651,7 @@ void RX_done_event(SessionContext *sessionContext){
  8000d38:	bd80      	pop	{r7, pc}
  8000d3a:	bf00      	nop
  8000d3c:	080078b4 	.word	0x080078b4
- 8000d40:	200002a8 	.word	0x200002a8
+ 8000d40:	200002ac 	.word	0x200002ac
 
 08000d44 <prepareMessage>:
 
@@ -1683,8 +1683,8 @@ void prepareMessage(const char* message){
  8000d70:	46bd      	mov	sp, r7
  8000d72:	bd80      	pop	{r7, pc}
  8000d74:	0800784c 	.word	0x0800784c
- 8000d78:	200001a0 	.word	0x200001a0
- 8000d7c:	200002a4 	.word	0x200002a4
+ 8000d78:	200001a4 	.word	0x200001a4
+ 8000d7c:	200002a8 	.word	0x200002a8
 
 08000d80 <Error_Handler>:
 /**
@@ -1915,7 +1915,7 @@ void USART2_IRQHandler(void)
  8000dfa:	bf00      	nop
  8000dfc:	bd80      	pop	{r7, pc}
  8000dfe:	bf00      	nop
- 8000e00:	200003d0 	.word	0x200003d0
+ 8000e00:	200003d4 	.word	0x200003d4
 
 08000e04 <SUBGHZ_Radio_IRQHandler>:
 
@@ -1939,7 +1939,7 @@ void SUBGHZ_Radio_IRQHandler(void)
  8000e0e:	bf00      	nop
  8000e10:	bd80      	pop	{r7, pc}
  8000e12:	bf00      	nop
- 8000e14:	200003c0 	.word	0x200003c0
+ 8000e14:	200003c4 	.word	0x200003c4
 
 08000e18 <LL_APB3_GRP1_EnableClock>:
   * @param  Periphs This parameter can be a combination of the following values:
@@ -2012,7 +2012,7 @@ void MX_SUBGHZ_Init(void)
  8000e62:	bf00      	nop
  8000e64:	bd80      	pop	{r7, pc}
  8000e66:	bf00      	nop
- 8000e68:	200003c0 	.word	0x200003c0
+ 8000e68:	200003c4 	.word	0x200003c4
 
 08000e6c <HAL_SUBGHZ_MspInit>:
 
@@ -2128,8 +2128,8 @@ void *_sbrk(ptrdiff_t incr)
  8000eee:	bd80      	pop	{r7, pc}
  8000ef0:	20010000 	.word	0x20010000
  8000ef4:	00000400 	.word	0x00000400
- 8000ef8:	200003cc 	.word	0x200003cc
- 8000efc:	200005c0 	.word	0x200005c0
+ 8000ef8:	200003d0 	.word	0x200003d0
+ 8000efc:	200005c8 	.word	0x200005c8
 
 08000f00 <SystemInit>:
   * @brief  Setup the microcontroller system.
@@ -2314,7 +2314,7 @@ void MX_USART2_UART_Init(void)
 }
  8000ff8:	bf00      	nop
  8000ffa:	bd80      	pop	{r7, pc}
- 8000ffc:	200003d0 	.word	0x200003d0
+ 8000ffc:	200003d4 	.word	0x200003d4
  8001000:	40004400 	.word	0x40004400
 
 08001004 <HAL_UART_MspInit>:
@@ -2513,13 +2513,13 @@ LoopForever:
   ldr r0, =_sdata
  80010dc:	20000000 	.word	0x20000000
   ldr r1, =_edata
- 80010e0:	20000084 	.word	0x20000084
+ 80010e0:	20000088 	.word	0x20000088
   ldr r2, =_sidata
  80010e4:	080079f4 	.word	0x080079f4
   ldr r2, =_sbss
- 80010e8:	20000084 	.word	0x20000084
+ 80010e8:	20000088 	.word	0x20000088
   ldr r4, =_ebss
- 80010ec:	200005c0 	.word	0x200005c0
+ 80010ec:	200005c4 	.word	0x200005c4
 
 080010f0 <ADC_IRQHandler>:
  * @retval : None
@@ -2628,7 +2628,7 @@ int32_t BSP_LED_Init(Led_TypeDef Led)
  800118c:	46bd      	mov	sp, r7
  800118e:	bd80      	pop	{r7, pc}
  8001190:	08007980 	.word	0x08007980
- 8001194:	20000020 	.word	0x20000020
+ 8001194:	20000024 	.word	0x20000024
 
 08001198 <BSP_LED_On>:
   *            @arg LED2
@@ -2660,7 +2660,7 @@ int32_t BSP_LED_On(Led_TypeDef Led)
  80011be:	3708      	adds	r7, #8
  80011c0:	46bd      	mov	sp, r7
  80011c2:	bd80      	pop	{r7, pc}
- 80011c4:	20000020 	.word	0x20000020
+ 80011c4:	20000024 	.word	0x20000024
  80011c8:	08007980 	.word	0x08007980
 
 080011cc <BSP_LED_Off>:
@@ -2693,7 +2693,7 @@ int32_t BSP_LED_Off(Led_TypeDef Led)
  80011f2:	3708      	adds	r7, #8
  80011f4:	46bd      	mov	sp, r7
  80011f6:	bd80      	pop	{r7, pc}
- 80011f8:	20000020 	.word	0x20000020
+ 80011f8:	20000024 	.word	0x20000024
  80011fc:	08007980 	.word	0x08007980
 
 08001200 <BSP_LED_Toggle>:
@@ -2726,7 +2726,7 @@ int32_t BSP_LED_Toggle(Led_TypeDef Led)
  8001226:	3708      	adds	r7, #8
  8001228:	46bd      	mov	sp, r7
  800122a:	bd80      	pop	{r7, pc}
- 800122c:	20000020 	.word	0x20000020
+ 800122c:	20000024 	.word	0x20000024
  8001230:	08007980 	.word	0x08007980
 
 08001234 <LL_AHB2_GRP1_EnableClock>:
@@ -3312,9 +3312,9 @@ void SUBGRF_Init( DioIrqHandler dioIrq )
  80014d6:	46bd      	mov	sp, r7
  80014d8:	bd80      	pop	{r7, pc}
  80014da:	bf00      	nop
- 80014dc:	20000470 	.word	0x20000470
- 80014e0:	2000046c 	.word	0x2000046c
- 80014e4:	20000464 	.word	0x20000464
+ 80014dc:	20000474 	.word	0x20000474
+ 80014e0:	20000470 	.word	0x20000470
+ 80014e4:	20000468 	.word	0x20000468
 
 080014e8 <SUBGRF_GetOperatingMode>:
 
@@ -3330,7 +3330,7 @@ RadioOperatingModes_t SUBGRF_GetOperatingMode( void )
  80014f2:	46bd      	mov	sp, r7
  80014f4:	bc80      	pop	{r7}
  80014f6:	4770      	bx	lr
- 80014f8:	20000464 	.word	0x20000464
+ 80014f8:	20000468 	.word	0x20000468
 
 080014fc <SUBGRF_SetPayload>:
 
@@ -3651,7 +3651,7 @@ void SUBGRF_SetStandby( RadioStandbyModes_t standbyConfig )
  80016c2:	46bd      	mov	sp, r7
  80016c4:	bd80      	pop	{r7, pc}
  80016c6:	bf00      	nop
- 80016c8:	20000464 	.word	0x20000464
+ 80016c8:	20000468 	.word	0x20000468
 
 080016cc <SUBGRF_SetTx>:
     SUBGRF_WriteCommand( RADIO_SET_FS, 0, 0 );
@@ -3697,7 +3697,7 @@ void SUBGRF_SetTx( uint32_t timeout )
  8001702:	46bd      	mov	sp, r7
  8001704:	bd80      	pop	{r7, pc}
  8001706:	bf00      	nop
- 8001708:	20000464 	.word	0x20000464
+ 8001708:	20000468 	.word	0x20000468
 
 0800170c <SUBGRF_SetRx>:
 
@@ -3740,7 +3740,7 @@ void SUBGRF_SetRx( uint32_t timeout )
  8001742:	46bd      	mov	sp, r7
  8001744:	bd80      	pop	{r7, pc}
  8001746:	bf00      	nop
- 8001748:	20000464 	.word	0x20000464
+ 8001748:	20000468 	.word	0x20000468
 
 0800174c <SUBGRF_SetStopRxTimerOnPreambleDetect>:
 {
@@ -4247,7 +4247,7 @@ void SUBGRF_SetRfFrequency( uint32_t frequency )
  8001a3c:	3710      	adds	r7, #16
  8001a3e:	46bd      	mov	sp, r7
  8001a40:	e8bd 83b0 	ldmia.w	sp!, {r4, r5, r7, r8, r9, pc}
- 8001a44:	2000046c 	.word	0x2000046c
+ 8001a44:	20000470 	.word	0x20000470
  8001a48:	01e84800 	.word	0x01e84800
 
 08001a4c <SUBGRF_SetPacketType>:
@@ -4286,7 +4286,7 @@ void SUBGRF_SetPacketType( RadioPacketTypes_t packetType )
  8001a7a:	3708      	adds	r7, #8
  8001a7c:	46bd      	mov	sp, r7
  8001a7e:	bd80      	pop	{r7, pc}
- 8001a80:	20000465 	.word	0x20000465
+ 8001a80:	20000469 	.word	0x20000469
 
 08001a84 <SUBGRF_GetPacketType>:
 
@@ -4302,7 +4302,7 @@ RadioPacketTypes_t SUBGRF_GetPacketType( void )
  8001a8e:	46bd      	mov	sp, r7
  8001a90:	bc80      	pop	{r7}
  8001a92:	4770      	bx	lr
- 8001a94:	20000465 	.word	0x20000465
+ 8001a94:	20000469 	.word	0x20000469
 
 08001a98 <SUBGRF_SetTxParams>:
 
@@ -4800,7 +4800,7 @@ void SUBGRF_SetModulationParams( ModulationParams_t *modulationParams )
  8001dbc:	46bd      	mov	sp, r7
  8001dbe:	e8bd 83b0 	ldmia.w	sp!, {r4, r5, r7, r8, r9, pc}
  8001dc2:	bf00      	nop
- 8001dc4:	20000465 	.word	0x20000465
+ 8001dc4:	20000469 	.word	0x20000469
  8001dc8:	3d090000 	.word	0x3d090000
  8001dcc:	01e84800 	.word	0x01e84800
 
@@ -5005,8 +5005,8 @@ void SUBGRF_SetPacketParams( PacketParams_t *packetParams )
  8001efa:	3718      	adds	r7, #24
  8001efc:	46bd      	mov	sp, r7
  8001efe:	bd80      	pop	{r7, pc}
- 8001f00:	20000465 	.word	0x20000465
- 8001f04:	20000466 	.word	0x20000466
+ 8001f00:	20000469 	.word	0x20000469
+ 8001f04:	2000046a 	.word	0x2000046a
 
 08001f08 <SUBGRF_SetBufferBaseAddress>:
     SUBGRF_WriteCommand( RADIO_SET_CADPARAMS, buf, 7 );
@@ -5104,7 +5104,7 @@ void SUBGRF_GetRxBufferStatus( uint8_t *payloadLength, uint8_t *rxStartBufferPoi
  8001f86:	46bd      	mov	sp, r7
  8001f88:	bd80      	pop	{r7, pc}
  8001f8a:	bf00      	nop
- 8001f8c:	20000466 	.word	0x20000466
+ 8001f8c:	2000046a 	.word	0x2000046a
 
 08001f90 <SUBGRF_GetPacketStatus>:
 
@@ -5217,7 +5217,7 @@ void SUBGRF_GetPacketStatus( PacketStatus_t *pktStatus )
  800202a:	3710      	adds	r7, #16
  800202c:	46bd      	mov	sp, r7
  800202e:	bd80      	pop	{r7, pc}
- 8002030:	20000468 	.word	0x20000468
+ 8002030:	2000046c 	.word	0x2000046c
 
 08002034 <SUBGRF_WriteRegister>:
     buf[1] = ( uint8_t )( ( uint16_t )irq & 0x00FF );
@@ -5245,7 +5245,7 @@ void SUBGRF_WriteRegister( uint16_t addr, uint8_t data )
  8002052:	3708      	adds	r7, #8
  8002054:	46bd      	mov	sp, r7
  8002056:	bd80      	pop	{r7, pc}
- 8002058:	200003c0 	.word	0x200003c0
+ 8002058:	200003c4 	.word	0x200003c4
 
 0800205c <SUBGRF_ReadRegister>:
 
@@ -5271,7 +5271,7 @@ uint8_t SUBGRF_ReadRegister( uint16_t addr )
  800207a:	46bd      	mov	sp, r7
  800207c:	bd80      	pop	{r7, pc}
  800207e:	bf00      	nop
- 8002080:	200003c0 	.word	0x200003c0
+ 8002080:	200003c4 	.word	0x200003c4
 
 08002084 <SUBGRF_WriteRegisters>:
 
@@ -5326,7 +5326,7 @@ __STATIC_FORCEINLINE void __set_PRIMASK(uint32_t priMask)
  80020be:	46bd      	mov	sp, r7
  80020c0:	bd80      	pop	{r7, pc}
  80020c2:	bf00      	nop
- 80020c4:	200003c0 	.word	0x200003c0
+ 80020c4:	200003c4 	.word	0x200003c4
 
 080020c8 <SUBGRF_ReadRegisters>:
 
@@ -5371,7 +5371,7 @@ void SUBGRF_ReadRegisters( uint16_t address, uint8_t *buffer, uint16_t size )
  8002102:	46bd      	mov	sp, r7
  8002104:	bd80      	pop	{r7, pc}
  8002106:	bf00      	nop
- 8002108:	200003c0 	.word	0x200003c0
+ 8002108:	200003c4 	.word	0x200003c4
 
 0800210c <SUBGRF_WriteBuffer>:
 
@@ -5416,7 +5416,7 @@ void SUBGRF_WriteBuffer( uint8_t offset, uint8_t *buffer, uint8_t size )
  8002146:	3718      	adds	r7, #24
  8002148:	46bd      	mov	sp, r7
  800214a:	bd80      	pop	{r7, pc}
- 800214c:	200003c0 	.word	0x200003c0
+ 800214c:	200003c4 	.word	0x200003c4
 
 08002150 <SUBGRF_ReadBuffer>:
 
@@ -5461,7 +5461,7 @@ void SUBGRF_ReadBuffer( uint8_t offset, uint8_t *buffer, uint8_t size )
  800218a:	3718      	adds	r7, #24
  800218c:	46bd      	mov	sp, r7
  800218e:	bd80      	pop	{r7, pc}
- 8002190:	200003c0 	.word	0x200003c0
+ 8002190:	200003c4 	.word	0x200003c4
 
 08002194 <SUBGRF_WriteCommand>:
 
@@ -5507,7 +5507,7 @@ void SUBGRF_WriteCommand( SUBGHZ_RadioSetCmd_t Command, uint8_t *pBuffer,
  80021ce:	46bd      	mov	sp, r7
  80021d0:	bd80      	pop	{r7, pc}
  80021d2:	bf00      	nop
- 80021d4:	200003c0 	.word	0x200003c0
+ 80021d4:	200003c4 	.word	0x200003c4
 
 080021d8 <SUBGRF_ReadCommand>:
 
@@ -5553,7 +5553,7 @@ void SUBGRF_ReadCommand( SUBGHZ_RadioGetCmd_t Command, uint8_t *pBuffer,
  8002212:	46bd      	mov	sp, r7
  8002214:	bd80      	pop	{r7, pc}
  8002216:	bf00      	nop
- 8002218:	200003c0 	.word	0x200003c0
+ 8002218:	200003c4 	.word	0x200003c4
 
 0800221c <SUBGRF_SetSwitch>:
 
@@ -5722,7 +5722,7 @@ void HAL_SUBGHZ_TxCpltCallback(SUBGHZ_HandleTypeDef *hsubghz)
  80022e6:	3708      	adds	r7, #8
  80022e8:	46bd      	mov	sp, r7
  80022ea:	bd80      	pop	{r7, pc}
- 80022ec:	20000470 	.word	0x20000470
+ 80022ec:	20000474 	.word	0x20000474
 
 080022f0 <HAL_SUBGHZ_RxCpltCallback>:
 
@@ -5742,7 +5742,7 @@ void HAL_SUBGHZ_RxCpltCallback(SUBGHZ_HandleTypeDef *hsubghz)
  8002302:	3708      	adds	r7, #8
  8002304:	46bd      	mov	sp, r7
  8002306:	bd80      	pop	{r7, pc}
- 8002308:	20000470 	.word	0x20000470
+ 8002308:	20000474 	.word	0x20000474
 
 0800230c <HAL_SUBGHZ_CRCErrorCallback>:
 
@@ -5762,7 +5762,7 @@ void HAL_SUBGHZ_CRCErrorCallback (SUBGHZ_HandleTypeDef *hsubghz)
  800231e:	3708      	adds	r7, #8
  8002320:	46bd      	mov	sp, r7
  8002322:	bd80      	pop	{r7, pc}
- 8002324:	20000470 	.word	0x20000470
+ 8002324:	20000474 	.word	0x20000474
 
 08002328 <HAL_SUBGHZ_CADStatusCallback>:
 
@@ -5808,7 +5808,7 @@ void HAL_SUBGHZ_CADStatusCallback(SUBGHZ_HandleTypeDef *hsubghz, HAL_SUBGHZ_CadS
  800235a:	46bd      	mov	sp, r7
  800235c:	bd80      	pop	{r7, pc}
  800235e:	bf00      	nop
- 8002360:	20000470 	.word	0x20000470
+ 8002360:	20000474 	.word	0x20000474
 
 08002364 <HAL_SUBGHZ_RxTxTimeoutCallback>:
 
@@ -5829,7 +5829,7 @@ void HAL_SUBGHZ_RxTxTimeoutCallback(SUBGHZ_HandleTypeDef *hsubghz)
  800237a:	46bd      	mov	sp, r7
  800237c:	bd80      	pop	{r7, pc}
  800237e:	bf00      	nop
- 8002380:	20000470 	.word	0x20000470
+ 8002380:	20000474 	.word	0x20000474
 
 08002384 <HAL_SUBGHZ_HeaderErrorCallback>:
 
@@ -5849,7 +5849,7 @@ void HAL_SUBGHZ_HeaderErrorCallback(SUBGHZ_HandleTypeDef *hsubghz)
  8002396:	3708      	adds	r7, #8
  8002398:	46bd      	mov	sp, r7
  800239a:	bd80      	pop	{r7, pc}
- 800239c:	20000470 	.word	0x20000470
+ 800239c:	20000474 	.word	0x20000474
 
 080023a0 <HAL_SUBGHZ_PreambleDetectedCallback>:
 
@@ -5869,7 +5869,7 @@ void HAL_SUBGHZ_PreambleDetectedCallback(SUBGHZ_HandleTypeDef *hsubghz)
  80023b2:	3708      	adds	r7, #8
  80023b4:	46bd      	mov	sp, r7
  80023b6:	bd80      	pop	{r7, pc}
- 80023b8:	20000470 	.word	0x20000470
+ 80023b8:	20000474 	.word	0x20000474
 
 080023bc <HAL_SUBGHZ_SyncWordValidCallback>:
 
@@ -5889,7 +5889,7 @@ void HAL_SUBGHZ_SyncWordValidCallback(SUBGHZ_HandleTypeDef *hsubghz)
  80023ce:	3708      	adds	r7, #8
  80023d0:	46bd      	mov	sp, r7
  80023d2:	bd80      	pop	{r7, pc}
- 80023d4:	20000470 	.word	0x20000470
+ 80023d4:	20000474 	.word	0x20000474
 
 080023d8 <HAL_SUBGHZ_HeaderValidCallback>:
 
@@ -5909,7 +5909,7 @@ void HAL_SUBGHZ_HeaderValidCallback(SUBGHZ_HandleTypeDef *hsubghz)
  80023ea:	3708      	adds	r7, #8
  80023ec:	46bd      	mov	sp, r7
  80023ee:	bd80      	pop	{r7, pc}
- 80023f0:	20000470 	.word	0x20000470
+ 80023f0:	20000474 	.word	0x20000474
 
 080023f4 <HAL_SUBGHZ_LrFhssHopCallback>:
 
@@ -5930,7 +5930,7 @@ void HAL_SUBGHZ_LrFhssHopCallback(SUBGHZ_HandleTypeDef *hsubghz)
  800240a:	46bd      	mov	sp, r7
  800240c:	bd80      	pop	{r7, pc}
  800240e:	bf00      	nop
- 8002410:	20000470 	.word	0x20000470
+ 8002410:	20000474 	.word	0x20000474
 
 08002414 <Radio_SMPS_Set>:
 
@@ -6035,7 +6035,7 @@ HAL_StatusTypeDef HAL_Init(void)
  800248e:	46bd      	mov	sp, r7
  8002490:	bd80      	pop	{r7, pc}
  8002492:	bf00      	nop
- 8002494:	2000001c 	.word	0x2000001c
+ 8002494:	20000020 	.word	0x20000020
 
 08002498 <HAL_InitTick>:
   *       implementation  in user file.
@@ -6127,8 +6127,8 @@ __weak HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
  80024fe:	3710      	adds	r7, #16
  8002500:	46bd      	mov	sp, r7
  8002502:	bd80      	pop	{r7, pc}
- 8002504:	20000030 	.word	0x20000030
- 8002508:	2000002c 	.word	0x2000002c
+ 8002504:	20000034 	.word	0x20000034
+ 8002508:	20000030 	.word	0x20000030
 
 0800250c <HAL_IncTick>:
   * @note This function is declared as __weak to be overwritten in case of other
@@ -6153,8 +6153,8 @@ __weak void HAL_IncTick(void)
  8002522:	46bd      	mov	sp, r7
  8002524:	bc80      	pop	{r7}
  8002526:	4770      	bx	lr
- 8002528:	20000030 	.word	0x20000030
- 800252c:	20000474 	.word	0x20000474
+ 8002528:	20000034 	.word	0x20000034
+ 800252c:	20000478 	.word	0x20000478
 
 08002530 <HAL_GetTick>:
   * @note This function is declared as __weak to be overwritten in case of other
@@ -6173,7 +6173,7 @@ __weak uint32_t HAL_GetTick(void)
  800253a:	46bd      	mov	sp, r7
  800253c:	bc80      	pop	{r7}
  800253e:	4770      	bx	lr
- 8002540:	20000474 	.word	0x20000474
+ 8002540:	20000478 	.word	0x20000478
 
 08002544 <HAL_Delay>:
   *       implementations in user file.
@@ -6226,7 +6226,7 @@ __weak void HAL_Delay(uint32_t Delay)
  8002582:	46bd      	mov	sp, r7
  8002584:	bd80      	pop	{r7, pc}
  8002586:	bf00      	nop
- 8002588:	20000030 	.word	0x20000030
+ 8002588:	20000034 	.word	0x20000034
 
 0800258c <__NVIC_SetPriorityGrouping>:
            In case of a conflict between priority grouping and available
@@ -9248,8 +9248,8 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *RCC_OscInitStruct)
       /* Wait till LSI is ready */
       while (LL_RCC_LSI_IsReady() == 0U)
  80035ea:	e00c      	b.n	8003606 <HAL_RCC_OscConfig+0x3c2>
- 80035ec:	2000001c 	.word	0x2000001c
- 80035f0:	2000002c 	.word	0x2000002c
+ 80035ec:	20000020 	.word	0x20000020
+ 80035f0:	20000030 	.word	0x20000030
       {
         if ((HAL_GetTick() - tickstart) > LSI_TIMEOUT_VALUE)
  80035f4:	f7fe ff9c 	bl	8002530 <HAL_GetTick>
@@ -10308,8 +10308,8 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(RCC_ClkInitTypeDef  *RCC_ClkInitStruct, ui
  8003bbc:	bd80      	pop	{r7, pc}
  8003bbe:	bf00      	nop
  8003bc0:	58004000 	.word	0x58004000
- 8003bc4:	2000001c 	.word	0x2000001c
- 8003bc8:	2000002c 	.word	0x2000002c
+ 8003bc4:	20000020 	.word	0x20000020
+ 8003bc8:	20000030 	.word	0x20000030
 
 08003bcc <HAL_RCC_GetSysClockFreq>:
   *
@@ -11920,7 +11920,7 @@ HAL_StatusTypeDef HAL_SUBGHZ_Init(SUBGHZ_HandleTypeDef *hsubghz)
  80044ee:	3710      	adds	r7, #16
  80044f0:	46bd      	mov	sp, r7
  80044f2:	bd80      	pop	{r7, pc}
- 80044f4:	2000001c 	.word	0x2000001c
+ 80044f4:	20000020 	.word	0x20000020
 
 080044f8 <HAL_SUBGHZ_WriteRegisters>:
   */
@@ -13206,7 +13206,7 @@ HAL_StatusTypeDef SUBGHZSPI_Transmit(SUBGHZ_HandleTypeDef *hsubghz,
  8004b2a:	bc80      	pop	{r7}
  8004b2c:	4770      	bx	lr
  8004b2e:	bf00      	nop
- 8004b30:	2000001c 	.word	0x2000001c
+ 8004b30:	20000020 	.word	0x20000020
  8004b34:	58010000 	.word	0x58010000
  8004b38:	5801000c 	.word	0x5801000c
 
@@ -13342,7 +13342,7 @@ HAL_StatusTypeDef SUBGHZSPI_Receive(SUBGHZ_HandleTypeDef *hsubghz,
  8004bda:	bc80      	pop	{r7}
  8004bdc:	4770      	bx	lr
  8004bde:	bf00      	nop
- 8004be0:	2000001c 	.word	0x2000001c
+ 8004be0:	20000020 	.word	0x20000020
  8004be4:	58010000 	.word	0x58010000
  8004be8:	5801000c 	.word	0x5801000c
 
@@ -13406,7 +13406,7 @@ HAL_StatusTypeDef SUBGHZ_CheckDeviceReady(SUBGHZ_HandleTypeDef *hsubghz)
  8004c2a:	3710      	adds	r7, #16
  8004c2c:	46bd      	mov	sp, r7
  8004c2e:	bd80      	pop	{r7, pc}
- 8004c30:	2000001c 	.word	0x2000001c
+ 8004c30:	20000020 	.word	0x20000020
 
 08004c34 <SUBGHZ_WaitOnBusy>:
   * @param  hsubghz pointer to a SUBGHZ_HandleTypeDef structure that contains
@@ -13479,7 +13479,7 @@ HAL_StatusTypeDef SUBGHZ_WaitOnBusy(SUBGHZ_HandleTypeDef *hsubghz)
  8004c86:	3718      	adds	r7, #24
  8004c88:	46bd      	mov	sp, r7
  8004c8a:	bd80      	pop	{r7, pc}
- 8004c8c:	2000001c 	.word	0x2000001c
+ 8004c8c:	20000020 	.word	0x20000020
 
 08004c90 <LL_RCC_GetUSARTClockSource>:
 {
@@ -18916,7 +18916,7 @@ void UTIL_MEM_set_8( void *dst, uint8_t value, uint16_t size )
  8006e96:	2200      	movs	r2, #0
  8006e98:	701a      	strb	r2, [r3, #0]
  8006e9a:	e7d6      	b.n	8006e4a <sniprintf+0x16>
- 8006e9c:	20000034 	.word	0x20000034
+ 8006e9c:	20000038 	.word	0x20000038
 
 08006ea0 <siprintf>:
  8006ea0:	b40e      	push	{r1, r2, r3}
@@ -18945,7 +18945,7 @@ void UTIL_MEM_set_8( void *dst, uint8_t value, uint16_t size )
  8006ed6:	b003      	add	sp, #12
  8006ed8:	4770      	bx	lr
  8006eda:	bf00      	nop
- 8006edc:	20000034 	.word	0x20000034
+ 8006edc:	20000038 	.word	0x20000038
  8006ee0:	ffff0208 	.word	0xffff0208
 
 08006ee4 <memset>:
@@ -18962,7 +18962,7 @@ void UTIL_MEM_set_8( void *dst, uint8_t value, uint16_t size )
  8006ef6:	6818      	ldr	r0, [r3, #0]
  8006ef8:	4770      	bx	lr
  8006efa:	bf00      	nop
- 8006efc:	20000034 	.word	0x20000034
+ 8006efc:	20000038 	.word	0x20000038
 
 08006f00 <__libc_init_array>:
  8006f00:	b570      	push	{r4, r5, r6, lr}
@@ -19070,7 +19070,7 @@ void UTIL_MEM_set_8( void *dst, uint8_t value, uint16_t size )
  8006fd6:	e7ca      	b.n	8006f6e <_free_r+0x22>
  8006fd8:	bd38      	pop	{r3, r4, r5, pc}
  8006fda:	bf00      	nop
- 8006fdc:	200005bc 	.word	0x200005bc
+ 8006fdc:	200005c0 	.word	0x200005c0
 
 08006fe0 <sbrk_aligned>:
  8006fe0:	b570      	push	{r4, r5, r6, lr}
@@ -19100,7 +19100,7 @@ void UTIL_MEM_set_8( void *dst, uint8_t value, uint16_t size )
  800701a:	d1f2      	bne.n	8007002 <sbrk_aligned+0x22>
  800701c:	e7ef      	b.n	8006ffe <sbrk_aligned+0x1e>
  800701e:	bf00      	nop
- 8007020:	200005b8 	.word	0x200005b8
+ 8007020:	200005bc 	.word	0x200005bc
 
 08007024 <_malloc_r>:
  8007024:	e92d 43f8 	stmdb	sp!, {r3, r4, r5, r6, r7, r8, r9, lr}
@@ -19210,19 +19210,19 @@ void UTIL_MEM_set_8( void *dst, uint8_t value, uint16_t size )
  800711a:	6005      	str	r5, [r0, #0]
  800711c:	e7d6      	b.n	80070cc <_malloc_r+0xa8>
  800711e:	bf00      	nop
- 8007120:	200005bc 	.word	0x200005bc
+ 8007120:	200005c0 	.word	0x200005c0
 
 08007124 <__malloc_lock>:
  8007124:	4801      	ldr	r0, [pc, #4]	@ (800712c <__malloc_lock+0x8>)
  8007126:	f7ff bf0f 	b.w	8006f48 <__retarget_lock_acquire_recursive>
  800712a:	bf00      	nop
- 800712c:	200005b4 	.word	0x200005b4
+ 800712c:	200005b8 	.word	0x200005b8
 
 08007130 <__malloc_unlock>:
  8007130:	4801      	ldr	r0, [pc, #4]	@ (8007138 <__malloc_unlock+0x8>)
  8007132:	f7ff bf0a 	b.w	8006f4a <__retarget_lock_release_recursive>
  8007136:	bf00      	nop
- 8007138:	200005b4 	.word	0x200005b4
+ 8007138:	200005b8 	.word	0x200005b8
 
 0800713c <__ssputs_r>:
  800713c:	e92d 47f0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, lr}
@@ -19872,7 +19872,7 @@ void UTIL_MEM_set_8( void *dst, uint8_t value, uint16_t size )
  800774e:	b103      	cbz	r3, 8007752 <_sbrk_r+0x1a>
  8007750:	6023      	str	r3, [r4, #0]
  8007752:	bd38      	pop	{r3, r4, r5, pc}
- 8007754:	200005b0 	.word	0x200005b0
+ 8007754:	200005b4 	.word	0x200005b4
 
 08007758 <memcpy>:
  8007758:	440a      	add	r2, r1

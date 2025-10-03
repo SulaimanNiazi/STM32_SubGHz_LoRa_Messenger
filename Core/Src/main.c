@@ -79,7 +79,7 @@ typedef struct{
 uint8_t buffer[MAX_BUFFER_SIZE], output[MAX_BUFFER_SIZE], input[1];
 uint16_t count = 0, retries = RETRY_LIMIT;
 bool messageReady = false, connected = false;
-char id[20] = "\r\nSetting your ID as", backup[MAX_BUFFER_SIZE];
+char id[21] = "\r\nSetting your ID as", backup[MAX_BUFFER_SIZE];
 int idLen = -2;
 
 void (*volatile currentEvent)(SessionContext*);
@@ -248,7 +248,7 @@ void UART_Transmit(const char* string){
 }
 
 void resetTerminal(){
-	count = (uint16_t)snprintf((char*)buffer, MAX_BUFFER_SIZE, "%s: ", id);
+	count = snprintf((char*)buffer, MAX_BUFFER_SIZE, "%s: ", id);
 	UART_Transmit((char*)buffer);
 }
 
