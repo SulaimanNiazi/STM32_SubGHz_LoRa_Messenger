@@ -61,13 +61,14 @@ typedef struct{
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
 
-#define MAX_BUFFER_SIZE 		255
+#define MAX_BUFFER_SIZE 		256
 #define RF_FREQ		 			868000000 	// Hz = 868 MHz - Ranges in PK {433.05 - 434.79}, {865 - 869}, {920 - 925}
 #define TX_POWER		 		14        	// dBm
 #define LORA_BANDWIDTH 			LORA_BW_125	// 125 kHz
 #define LORA_SPREADING_FACTOR 	LORA_SF7	// SF7
 #define LORA_CODING_RATE 		LORA_CR_4_5	// 4/5
 #define LORA_PREAMBLE_LENGTH 	8         	// Same for Tx and Rx
+#define RETRY_LIMIT				10
 
 /* USER CODE END PM */
 
@@ -76,8 +77,8 @@ typedef struct{
 /* USER CODE BEGIN PV */
 
 uint8_t buffer[MAX_BUFFER_SIZE], output[MAX_BUFFER_SIZE], input[1];
-uint16_t count = 0;
-bool messageReady = false;
+uint16_t count = 0, retries = RETRY_LIMIT;
+bool messageReady = false, connected = false;
 char id[MAX_BUFFER_SIZE] = "\r\nSetting your ID as";
 int idLen = -2;
 
@@ -98,7 +99,7 @@ void Radio_Init();
 void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t);
 void SUBGRF_Transmit(uint8_t*, const uint8_t);
 
-void RX_error_event(SessionContext*);
+void timeout_error_event(SessionContext*);
 void RX_done_event(SessionContext*);
 void start_RX_mode(SessionContext*);
 void start_TX_mode(SessionContext*);
@@ -289,7 +290,12 @@ void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t radioIRq){
 			break;
 
 		case IRQ_RX_DONE:
-			BSP_LED_Off(LED_RED);
+			if(!connected){
+				connected = true;
+				retries = 0;
+				BSP_LED_Off(LED_RED);
+				interruptTerminal("Connected");
+			}
 			currentEvent = RX_done_event;
 			break;
 
@@ -300,14 +306,16 @@ void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t radioIRq){
 					break;
 
 				case MODE_RX:	// RX Timeout
-					BSP_LED_On(LED_RED);
-					BSP_LED_Off(LED_BLUE|LED_GREEN);
-					interruptTerminal("RX TIMEOUT");
-					currentEvent = RX_error_event;
-
+					if(connected) if(++retries > RETRY_LIMIT){
+						connected = false;
+						BSP_LED_On(LED_RED);
+						BSP_LED_Off(LED_BLUE|LED_GREEN);
+						interruptTerminal("\r\nDisconnected\r\n");
+					}
 					break;
 				default:break;
 			}
+			currentEvent = timeout_error_event;
 			break;
 
 		case IRQ_CRC_ERROR: // Rx Error
@@ -381,6 +389,7 @@ void SUBGRF_Transmit(uint8_t* payload, const uint8_t size){
 void start_TX_mode(SessionContext *sessionContext)
 {
 	HAL_Delay(sessionContext->txDelay);						// Delay to allow one to be fixed as Master and the other as slave
+	sessionContext->subState = TX;
 
 	if(messageReady){										// Send Message if ready instead of \\\PING / \\\PONG
 		SUBGRF_Transmit(output, strlen((char*)output) + 1);	// + 1 for last null character
@@ -408,7 +417,7 @@ void start_RX_mode(SessionContext *sessionContext){
 /** MASTER/RX CRC/header error → treat like “no valid frame” and attempt TX "PING" after random backoff.
   * SLAVE/RX → simply re-enter RX.
   */
-void RX_error_event(SessionContext *sessionContext){
+void timeout_error_event(SessionContext *sessionContext){
 	if(sessionContext->state == MASTER){
 		start_TX_mode(sessionContext);
 	}else{
