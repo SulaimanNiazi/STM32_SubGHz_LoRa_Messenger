@@ -91,16 +91,16 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 
 void UART_Transmit(const char*);
-void resetTerminal();
 void interruptTerminal(const char*);
+void resetTerminal();
 
 void Radio_Init();
 void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t);
+void SUBGRF_Transmit(uint8_t*, const uint8_t);
+
 void RX_error_event(SessionContext*);
 void start_RX_mode(SessionContext*);
-void TX_done_event(SessionContext*);
 void start_TX_mode(SessionContext*);
-void SUBGRF_Transmit(uint8_t*, const uint8_t);
 
 /* USER CODE END PFP */
 
@@ -164,15 +164,14 @@ int main(void)
   UART_Transmit("\r\n\r\n");
   resetTerminal();
 
-  BSP_LED_On(LED_RED); 			// Disconnected at first
+  BSP_LED_On(LED_RED); 				// Disconnected at first
 
   SessionContext sessionContext = {
-		  .state = MASTER,		// Start as Master
-		  .subState = RX,		// Start by listening
-		  .rxTimeout = 3000,	// ms
-		  .txDelay = 100 		// ms
+		  .state = MASTER,			// Start as Master
+		  .rxTimeout = 3000,		// ms
+		  .txDelay = 100 			// ms
   };
-  start_RX_mode(&sessionContext);
+  start_RX_mode(&sessionContext);	// Start by listening
 
   HAL_NVIC_EnableIRQ(USART2_IRQn);
   messageReady = false;
@@ -286,7 +285,7 @@ void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t radioIRq){
 	switch(radioIRq){
 		case IRQ_TX_DONE:
 			interruptTerminal("TX COMPLETE");
-			currentEvent = TX_done_event;
+			currentEvent = start_RX_mode;
 			break;
 
 		case IRQ_RX_DONE:
@@ -364,24 +363,6 @@ void Radio_Init(){
 	SUBGRF_WriteRegister(0x0736, SUBGRF_ReadRegister(0x0736) | (1 << 2));
 }
 
-/** MASTER/RX CRC/header error → treat like “no valid frame” and attempt TX "PING" after random backoff.
-  * SLAVE/RX → simply re-enter RX.
-  */
-void RX_error_event(SessionContext *sessionContext){
-	switch (sessionContext->state){
-		case MASTER:
-			interruptTerminal("Entering TX mode");
-			sessionContext->subState = TX;
-			start_TX_mode(sessionContext);
-			break;
-
-		case SLAVE:
-			interruptTerminal("Entering RX mode");
-			break;
-		default:break;
-	}
-}
-
 void SUBGRF_Transmit(uint8_t* payload, const uint8_t size){
 	uint16_t mask = IRQ_TX_DONE | IRQ_RX_TX_TIMEOUT;
 	SUBGRF_SetDioIrqParams(mask, mask, IRQ_RADIO_NONE, IRQ_RADIO_NONE);
@@ -396,7 +377,7 @@ void SUBGRF_Transmit(uint8_t* payload, const uint8_t size){
 
 void start_TX_mode(SessionContext *sessionContext)
 {
-	HAL_Delay(sessionContext->txDelay);
+	HAL_Delay(sessionContext->txDelay);						// Delay to allow one to be fixed as Master and the other as slave
 
 	if(messageReady){										// Send Message if ready instead of \\\PING / \\\PONG
 		SUBGRF_Transmit(output, strlen((char*)output) + 1);	// + 1 for last null character
@@ -408,13 +389,9 @@ void start_TX_mode(SessionContext *sessionContext)
 	}
 }
 
-void TX_done_event(SessionContext *sessionContext){
-	interruptTerminal("Entering RX mode");
-	sessionContext->subState = RX;
-	start_RX_mode(sessionContext);
-}
-
 void start_RX_mode(SessionContext *sessionContext){
+	sessionContext->subState = RX;
+
 	uint16_t mask = IRQ_RX_DONE | IRQ_RX_TX_TIMEOUT | IRQ_CRC_ERROR | IRQ_HEADER_ERROR;
 	// Arm radio IRQs for RX done, timeout, CRC error
 	SUBGRF_SetDioIrqParams(mask, mask, IRQ_RADIO_NONE, IRQ_RADIO_NONE);
@@ -425,6 +402,25 @@ void start_RX_mode(SessionContext *sessionContext){
 	SUBGRF_SetPacketParams(&packetParams);
 	// SetRx(timeout): SX126x timeout units are 15.625 µs (1/64 ms). Multiplying ms by 64 = << 6.
 	SUBGRF_SetRx(sessionContext->rxTimeout << 6);
+}
+
+/** MASTER/RX CRC/header error → treat like “no valid frame” and attempt TX "PING" after random backoff.
+  * SLAVE/RX → simply re-enter RX.
+  */
+void RX_error_event(SessionContext *sessionContext){
+	switch (sessionContext->state){
+		case MASTER:
+			interruptTerminal("Entering TX mode");
+			sessionContext->subState = TX;
+			start_TX_mode(sessionContext);
+			break;
+
+		case SLAVE:
+			interruptTerminal("Entering RX mode");
+			start_RX_mode(sessionContext);
+			break;
+		default:break;
+	}
 }
 
 /* USER CODE END 4 */
