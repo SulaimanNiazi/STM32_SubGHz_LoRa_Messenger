@@ -99,10 +99,12 @@ void Radio_Init();
 void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t);
 void SUBGRF_Transmit(uint8_t*, const uint8_t);
 
-void timeout_error_event(SessionContext*);
+void error_event(SessionContext*);
 void RX_done_event(SessionContext*);
 void start_RX_mode(SessionContext*);
 void start_TX_mode(SessionContext*);
+
+void prepareMessage(const char*);
 
 /* USER CODE END PFP */
 
@@ -288,7 +290,7 @@ void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t radioIRq){
 	switch(radioIRq){
 		case IRQ_TX_DONE:
 			currentEvent = start_RX_mode;
-			break;
+			return;
 
 		case IRQ_RX_DONE:
 			if(!connected){
@@ -298,7 +300,7 @@ void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t radioIRq){
 				interruptTerminal("Connected");
 			}
 			currentEvent = RX_done_event;
-			break;
+			return;
 
 		case IRQ_RX_TX_TIMEOUT:
 			switch(SUBGRF_GetOperatingMode()){
@@ -311,22 +313,19 @@ void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t radioIRq){
 						connected = false;
 						BSP_LED_On(LED_RED);
 						BSP_LED_Off(LED_BLUE|LED_GREEN);
-						interruptTerminal("\r\nDisconnected\r\n");
+						interruptTerminal("Disconnected");
 					}
 					break;
 				default:break;
 			}
-			currentEvent = timeout_error_event;
 			break;
 
 		case IRQ_CRC_ERROR: // Rx Error
 			interruptTerminal("RX CRC ERROR");
-			sprintf((char*)output, "\\\\\\");	// message to repeat last message
-			output[4] = '\0';
-			messageReady = true;
-			break;
+			prepareMessage("\\\\\\");
 		default: break;
 	}
+	currentEvent = error_event;
 }
 
 /** Initialize the Sub-GHz radio and dependent hardware.
@@ -419,10 +418,7 @@ void start_RX_mode(SessionContext *sessionContext){
 	SUBGRF_SetRx(sessionContext->rxTimeout << 6);
 }
 
-/** MASTER/RX CRC/header error → treat like “no valid frame” and attempt TX "PING" after random backoff.
-  * SLAVE/RX → simply re-enter RX.
-  */
-void timeout_error_event(SessionContext *sessionContext){
+void error_event(SessionContext *sessionContext){
 	if(sessionContext->state == MASTER){
 		start_TX_mode(sessionContext);
 	}else{
@@ -458,9 +454,7 @@ void RX_done_event(SessionContext *sessionContext){
 		}
 		else if(sessionContext->rxBuffer[4] == '\0'){
 			interruptTerminal("TX CRC Error");
-			int size = sprintf((char*)output, "%s", backup);
-			output[size] = '\0';
-			messageReady = true;
+			prepareMessage(backup);
 		}else{								// unDesired char
 			sessionContext->state = SLAVE;
 		}
@@ -468,6 +462,12 @@ void RX_done_event(SessionContext *sessionContext){
 		interruptTerminal(sessionContext->rxBuffer);
 	}
 	start_RX_mode(sessionContext);
+}
+
+void prepareMessage(const char* message){
+	uint8_t size = snprintf((char*)output, MAX_BUFFER_SIZE, "%s", message);
+	output[size] = '\0';
+	messageReady = true;
 }
 
 /* USER CODE END 4 */
