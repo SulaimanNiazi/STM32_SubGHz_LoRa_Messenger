@@ -96,8 +96,10 @@ void interruptTerminal(const char*);
 
 void Radio_Init();
 void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t);
-void rxErrorEvent(SessionContext*);
-void txMode(SessionContext*);
+void RX_error_event(SessionContext*);
+void start_RX_mode(SessionContext*);
+void TX_done_event(SessionContext*);
+void start_TX_mode(SessionContext*);
 void SUBGRF_Transmit(uint8_t*, const uint8_t);
 
 /* USER CODE END PFP */
@@ -170,10 +172,7 @@ int main(void)
 		  .rxTimeout = 3000,	// ms
 		  .txDelay = 100 		// ms
   };
-  uint16_t mask = IRQ_RX_DONE | IRQ_RX_TX_TIMEOUT | IRQ_CRC_ERROR;
-  SUBGRF_SetDioIrqParams( mask, mask, IRQ_RADIO_NONE, IRQ_RADIO_NONE );	// Arm radio IRQs for RX done, timeout, CRC error
-  SUBGRF_SetSwitch(RFO_LP, RFSWITCH_RX); 								// Set RF switch to RX path on low-power PA path
-  SUBGRF_SetRx(sessionContext.rxTimeout << 6); 							// SetRx(timeout): SX126x timeout units are 15.625 µs (1/64 ms). Multiplying ms by 64 = << 6.
+  start_RX_mode(&sessionContext);
 
   HAL_NVIC_EnableIRQ(USART2_IRQn);
   messageReady = false;
@@ -286,22 +285,23 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t radioIRq){
 	switch(radioIRq){
 		case IRQ_TX_DONE:
-			interruptTerminal("\r\nTX COMPLETE\r\n");
+			interruptTerminal("TX COMPLETE");
+			currentEvent = TX_done_event;
 			break;
 
 		case IRQ_RX_DONE:
-			interruptTerminal("\r\nRX COMPLETE\r\n");
+			interruptTerminal("RX COMPLETE");
 			break;
 
 		case IRQ_RX_TX_TIMEOUT:
 			switch(SUBGRF_GetOperatingMode()){
 				case MODE_TX: // TX Timeout
-					interruptTerminal("\r\nTX TIMEOUT\r\n");
+					interruptTerminal("TX TIMEOUT");
 					break;
 
 				case MODE_RX:	// RX Timeout
-					interruptTerminal("\r\nRX TIMEOUT\r\n");
-					currentEvent = rxErrorEvent;
+					interruptTerminal("RX TIMEOUT");
+					currentEvent = RX_error_event;
 
 					break;
 				default:break;
@@ -309,7 +309,7 @@ void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t radioIRq){
 			break;
 
 		case IRQ_CRC_ERROR: // Rx Error
-			interruptTerminal("\r\nRX CRC ERROR\r\n");
+			interruptTerminal("RX CRC ERROR");
 
 			break;
 		default: break;
@@ -367,32 +367,18 @@ void Radio_Init(){
 /** MASTER/RX CRC/header error → treat like “no valid frame” and attempt TX "PING" after random backoff.
   * SLAVE/RX → simply re-enter RX.
   */
-void rxErrorEvent(SessionContext *sessionContext){
+void RX_error_event(SessionContext *sessionContext){
 	switch (sessionContext->state){
 		case MASTER:
 			interruptTerminal("Entering TX mode");
 			sessionContext->subState = TX;
-			txMode(sessionContext);
+			start_TX_mode(sessionContext);
 			break;
 
 		case SLAVE:
 			interruptTerminal("Entering RX mode");
 			break;
 		default:break;
-	}
-}
-
-void txMode(SessionContext *sessionContext)
-{
-	HAL_Delay(sessionContext->txDelay);
-
-	if(messageReady){										// Send Message if ready instead of \\\PING / \\\PONG
-		SUBGRF_Transmit(output, strlen((char*)output) + 1);	// + 1 for last null character
-		messageReady = false;
-		interruptTerminal("Sent Message");
-	}else{
-		SUBGRF_Transmit((uint8_t*)((sessionContext->state == MASTER)?"\\\\\\PING":"\\\\\\PONG"), 7);
-		interruptTerminal("Sent PING/PONG");
 	}
 }
 
@@ -406,6 +392,39 @@ void SUBGRF_Transmit(uint8_t* payload, const uint8_t size){
 	packetParams.Params.LoRa.PayloadLength = size;
 	SUBGRF_SetPacketParams(&packetParams);
 	SUBGRF_SendPayload(payload, size, 0);
+}
+
+void start_TX_mode(SessionContext *sessionContext)
+{
+	HAL_Delay(sessionContext->txDelay);
+
+	if(messageReady){										// Send Message if ready instead of \\\PING / \\\PONG
+		SUBGRF_Transmit(output, strlen((char*)output) + 1);	// + 1 for last null character
+		messageReady = false;
+		interruptTerminal("Sent Message");
+	}else{
+		SUBGRF_Transmit((uint8_t*)((sessionContext->state == MASTER)?"\\\\\\PING":"\\\\\\PONG"), 7);
+		interruptTerminal("Sent PING/PONG");
+	}
+}
+
+void TX_done_event(SessionContext *sessionContext){
+	interruptTerminal("Entering RX mode");
+	sessionContext->subState = RX;
+	start_RX_mode(sessionContext);
+}
+
+void start_RX_mode(SessionContext *sessionContext){
+	uint16_t mask = IRQ_RX_DONE | IRQ_RX_TX_TIMEOUT | IRQ_CRC_ERROR | IRQ_HEADER_ERROR;
+	// Arm radio IRQs for RX done, timeout, CRC error
+	SUBGRF_SetDioIrqParams(mask, mask, IRQ_RADIO_NONE, IRQ_RADIO_NONE);
+	// Set RF switch to RX path on low-power PA path
+	SUBGRF_SetSwitch(RFO_LP, RFSWITCH_RX);
+
+	packetParams.Params.LoRa.PayloadLength = 0xFF;	// Maximum Length
+	SUBGRF_SetPacketParams(&packetParams);
+	// SetRx(timeout): SX126x timeout units are 15.625 µs (1/64 ms). Multiplying ms by 64 = << 6.
+	SUBGRF_SetRx(sessionContext->rxTimeout << 6);
 }
 
 /* USER CODE END 4 */
