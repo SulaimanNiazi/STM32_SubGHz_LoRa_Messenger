@@ -179,8 +179,7 @@ int main(void)
   HAL_NVIC_EnableIRQ(USART2_IRQn);
   messageReady = false;
 
-  while (1)
-  {
+  while(1){
     /* USER CODE END WHILE */
 
 	currentEvent = NULL;
@@ -261,7 +260,8 @@ void interruptTerminal(const char* interruption){
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	switch(input[0]){
-		case 0xd:
+		case 0xd:	// carriage return
+		case 0xa:	// line feed
 			UART_Transmit("\r\n");
 			sprintf((char*)output, "%s", (char*)buffer);
 			output[count] = '\0';
@@ -269,7 +269,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 			resetTerminal();
 			break;
 
-		case 0x8:
+		case 0x8:	// backspace
 			if(count > (idLen + 2)){
 				count--;
 				UART_Transmit("\b \b");

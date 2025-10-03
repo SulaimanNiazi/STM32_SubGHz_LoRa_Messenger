@@ -1,9 +1,9 @@
 ../Core/Src/main.c:118:5:main	280	static
-../Core/Src/main.c:199:6:SystemClock_Config	112	static
-../Core/Src/main.c:245:6:UART_Transmit	16	static
-../Core/Src/main.c:249:6:resetTerminal	8	static
-../Core/Src/main.c:254:6:interruptTerminal	24	static
-../Core/Src/main.c:262:6:HAL_UART_RxCpltCallback	16	static
+../Core/Src/main.c:198:6:SystemClock_Config	112	static
+../Core/Src/main.c:244:6:UART_Transmit	16	static
+../Core/Src/main.c:248:6:resetTerminal	8	static
+../Core/Src/main.c:253:6:interruptTerminal	24	static
+../Core/Src/main.c:261:6:HAL_UART_RxCpltCallback	16	static
 ../Core/Src/main.c:287:6:Radio_DIO_IRq_Callback_Handler	16	static
 ../Core/Src/main.c:334:6:Radio_Init	40	static
 ../Core/Src/main.c:380:6:SUBGRF_Transmit	24	static
