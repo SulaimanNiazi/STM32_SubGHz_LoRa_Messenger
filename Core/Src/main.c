@@ -285,12 +285,10 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t radioIRq){
 	switch(radioIRq){
 		case IRQ_TX_DONE:
-			interruptTerminal("TX COMPLETE");
 			currentEvent = start_RX_mode;
 			break;
 
 		case IRQ_RX_DONE:
-			interruptTerminal("RX COMPLETE");
 			BSP_LED_Off(LED_RED);
 			currentEvent = RX_done_event;
 			break;
@@ -303,6 +301,7 @@ void Radio_DIO_IRq_Callback_Handler(const RadioIrqMasks_t radioIRq){
 
 				case MODE_RX:	// RX Timeout
 					BSP_LED_On(LED_RED);
+					BSP_LED_Off(LED_BLUE|LED_GREEN);
 					interruptTerminal("RX TIMEOUT");
 					currentEvent = RX_error_event;
 
@@ -386,10 +385,8 @@ void start_TX_mode(SessionContext *sessionContext)
 	if(messageReady){										// Send Message if ready instead of \\\PING / \\\PONG
 		SUBGRF_Transmit(output, strlen((char*)output) + 1);	// + 1 for last null character
 		messageReady = false;
-		interruptTerminal("Sent Message");
 	}else{
 		SUBGRF_Transmit((uint8_t*)((sessionContext->state == MASTER)?"\\\\\\PING":"\\\\\\PONG"), 7);
-		interruptTerminal("Sent PING/PONG");
 	}
 }
 
@@ -412,18 +409,10 @@ void start_RX_mode(SessionContext *sessionContext){
   * SLAVE/RX → simply re-enter RX.
   */
 void RX_error_event(SessionContext *sessionContext){
-	switch (sessionContext->state){
-		case MASTER:
-			interruptTerminal("Entering TX mode");
-			sessionContext->subState = TX;
-			start_TX_mode(sessionContext);
-			break;
-
-		case SLAVE:
-			interruptTerminal("Entering RX mode");
-			start_RX_mode(sessionContext);
-			break;
-		default:break;
+	if(sessionContext->state == MASTER){
+		start_TX_mode(sessionContext);
+	}else{
+		start_RX_mode(sessionContext);
 	}
 }
 
@@ -453,7 +442,6 @@ void RX_done_event(SessionContext *sessionContext){
 		if(sessionContext->rxBuffer[4] == desiredChar){
 			BSP_LED_Off(undesiredLED);
 			BSP_LED_Toggle(desiredLED);
-			sessionContext->subState = TX;
 			start_TX_mode(sessionContext);
 		}else{
 			sessionContext->state = SLAVE;

@@ -5,10 +5,10 @@
 ../Core/Src/main.c:252:6:interruptTerminal	2
 ../Core/Src/main.c:260:6:HAL_UART_RxCpltCallback	5
 ../Core/Src/main.c:285:6:Radio_DIO_IRq_Callback_Handler	9
-../Core/Src/main.c:324:6:Radio_Init	1
-../Core/Src/main.c:370:6:SUBGRF_Transmit	1
-../Core/Src/main.c:382:6:start_TX_mode	3
-../Core/Src/main.c:396:6:start_RX_mode	1
-../Core/Src/main.c:414:6:RX_error_event	3
-../Core/Src/main.c:430:6:RX_done_event	6
-../Core/Src/main.c:474:6:Error_Handler	1
+../Core/Src/main.c:323:6:Radio_Init	1
+../Core/Src/main.c:369:6:SUBGRF_Transmit	1
+../Core/Src/main.c:381:6:start_TX_mode	3
+../Core/Src/main.c:393:6:start_RX_mode	1
+../Core/Src/main.c:411:6:RX_error_event	2
+../Core/Src/main.c:419:6:RX_done_event	6
+../Core/Src/main.c:462:6:Error_Handler	1
